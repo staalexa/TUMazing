@@ -12,6 +12,8 @@ import de.tum.cit.ase.maze.entitity.Character;
 import de.tum.cit.ase.maze.map.MazeLoader;
 
 import java.util.Arrays;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 /**
  * The GameScreen class is responsible for rendering the gameplay screen.
@@ -39,7 +41,7 @@ public class GameScreen implements Screen {
         // Create and configure the camera for the game view
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
-        camera.zoom = 0.75f;
+        camera.zoom = 1.5f;
 
         // Get the font from the game's skin
         font = game.getSkin().getFont("font");
@@ -50,27 +52,24 @@ public class GameScreen implements Screen {
 
         spriteBatch = game.getSpriteBatch();
         mazeLoader = new MazeLoader("level-1"); // set level here for now
-
-        character = new Character(2.5f, 3.8f, game);
-
+        int[] entryLocation = mazeLoader.getEntryLocation();
+        character = new Character(mazeLoader.multiplyByScale(entryLocation[0]), mazeLoader.multiplyByScale(entryLocation[1]));
     }
 
     // Screen interface methods with necessary functionality
     @Override
     public void render(float delta) {
         // Check for escape key press to go back to the menu
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            game.goToMenu();
-        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) game.goToMenu();
 
         ScreenUtils.clear(0, 0, 0, 1); // Clear the screen
 
         camera.update(); // Update the camera
 
 
-
         renderMaze();
-        character.drawCharacter(delta);
+        drawSomething(character.drawCharacter, delta);
+        character.moveCharacter();
     }
 
     @Override
@@ -111,6 +110,13 @@ public class GameScreen implements Screen {
         spriteBatch.begin();
 
         mazeLoader.drawMaze(spriteBatch, tiles, objects, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        spriteBatch.end();
+    }
+
+    public void drawSomething(BiConsumer<Float, MazeRunnerGame> drawFunction, float delta) {
+        spriteBatch.setProjectionMatrix(camera.combined);
+        spriteBatch.begin();
+        drawFunction.accept(delta, game);
         spriteBatch.end();
     }
 }

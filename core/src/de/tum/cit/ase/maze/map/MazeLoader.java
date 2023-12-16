@@ -148,6 +148,10 @@ public class MazeLoader {
         batch.draw(region, xPos, yPos, region.getRegionWidth() * scale, region.getRegionHeight() * scale);
     }
 
+    public float multiplyByScale(float number){
+        return number * 5 * 16;
+    }
+
     // Getters
     public boolean isWall(int x, int y) {
         return mapData[x][y] == 0;
