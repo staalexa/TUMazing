@@ -4,8 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
+import de.tum.cit.ase.maze.map.MazeLoader;
 
 /**
  * The GameScreen class is responsible for rendering the gameplay screen.
@@ -16,8 +19,10 @@ public class GameScreen implements Screen {
     private final MazeRunnerGame game;
     private final OrthographicCamera camera;
     private final BitmapFont font;
-
     private float sinusInput = 0f;
+    private final SpriteBatch spriteBatch;
+    private MazeLoader mazeLoader;
+    private Texture tiles, objects;
 
     /**
      * Constructor for GameScreen. Sets up the camera and font.
@@ -34,8 +39,14 @@ public class GameScreen implements Screen {
 
         // Get the font from the game's skin
         font = game.getSkin().getFont("font");
-    }
 
+        //Get textures
+        tiles = new Texture(Gdx.files.internal("assets/basictiles.png"));
+        objects = new Texture(Gdx.files.internal("assets/objects.png"));
+
+        spriteBatch = game.getSpriteBatch();
+        mazeLoader = new MazeLoader("level-1"); // set level here for now
+    }
 
     // Screen interface methods with necessary functionality
     @Override
@@ -72,6 +83,7 @@ public class GameScreen implements Screen {
         );
 
         game.getSpriteBatch().end(); // Important to call this after drawing everything
+        renderMaze();
     }
 
     @Override
@@ -98,7 +110,20 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
+        tiles.dispose();
+        objects.dispose();
     }
 
     // Additional methods and logic can be added as needed for the game screen
+
+    /**
+     * Renders the Maze
+     */
+    private void renderMaze() {
+        spriteBatch.setProjectionMatrix(camera.combined);
+        spriteBatch.begin();
+
+        mazeLoader.drawMaze(spriteBatch, tiles, objects, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        spriteBatch.end();
+    }
 }
