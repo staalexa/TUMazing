@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -31,10 +32,8 @@ public class MazeLoader {
 
         getProperties(levelName);
         mapData = new int[width][height];
-        for(int i = 0; i < width; i++) {
-            for(int j = 0; j < height; j++) {
-                mapData[i][j] = 9;
-            }
+        for(int[] row : mapData) {
+            Arrays.fill(row, 9);
         }
         loadMap(levelName);
     }
@@ -97,6 +96,8 @@ public class MazeLoader {
      * @param spriteBatch SpriteBatch
      * @param tiles Texture of all possible Tiles
      * @param objects Texture of all possible Objects
+     * @param screenHeight Screen height
+     * @param screenWidth Screen width
      */
     public void drawMaze(SpriteBatch spriteBatch, Texture tiles, Texture objects, int screenWidth, int screenHeight) {
         int scale = 5;
