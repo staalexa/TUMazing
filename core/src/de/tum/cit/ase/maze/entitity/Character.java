@@ -1,8 +1,5 @@
 package de.tum.cit.ase.maze.entitity;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import de.tum.cit.ase.maze.MazeRunnerGame;
 
 public class Character {
