@@ -19,8 +19,8 @@ public class MazeLoader {
     private final int[][] mapData;
     private int width, height;
     private TextureRegion wallTexture, pathTexture, entryTexture, exitTexture, trapTexture, keyTexture;
-    private int[][] entryLocation, keyLocation;
-    private List<int[][]> trapLocations, exitLocations, enemyLocations;
+    private int[] entryLocation, keyLocation;
+    private List<int[]> trapLocations, exitLocations, enemyLocations;
 
     public MazeLoader(String levelName) {
         width = 20;
@@ -78,11 +78,11 @@ public class MazeLoader {
                 int type = Integer.parseInt(splitData[1]);
                 mapData[x][y] = type;
                 switch (type) {
-                    case 1 -> entryLocation = new int[x][y];
-                    case 2 -> exitLocations.add(new int[x][y]);
-                    case 3 -> trapLocations.add(new int[x][y]);
-                    case 4 -> enemyLocations.add(new int[x][y]);
-                    case 5 -> keyLocation = new int[x][y];
+                    case 1 -> entryLocation = new int[]{x,y};
+                    case 2 -> exitLocations.add(new int[]{x,y});
+                    case 3 -> trapLocations.add(new int[]{x,y});
+                    case 4 -> enemyLocations.add(new int[]{x,y});
+                    case 5 -> keyLocation = new int[]{x,y};
                 }
             }
             reader.close();
@@ -128,7 +128,7 @@ public class MazeLoader {
                     //case 1 -> drawTextureWithScale(spriteBatch, xPos, yPos, entryTexture, scale);
                     case 2 -> drawTextureWithScale(spriteBatch, xPos, yPos, exitTexture, scale);
                     case 3 -> drawTextureWithScale(spriteBatch, xPos, yPos, trapTexture, scale);
-                    //case 4 -> System.out.print("M");
+                    //case 4 -> System.out.print("M"); //TODO create the mobs later
                     case 5 -> drawTextureWithScale(spriteBatch, xPos, yPos, keyTexture, scale);
                     //default -> drawTextureWithScale(spriteBatch, xPos, yPos, pathTexture, scale);
                 }
@@ -153,23 +153,23 @@ public class MazeLoader {
         return mapData[x][y] == 0;
     }
 
-    public int[][] getEntryLocation() {
+    public int[] getEntryLocation() {
         return entryLocation;
     }
 
-    public int[][] getKeyLocation() {
+    public int[] getKeyLocation() {
         return keyLocation;
     }
 
-    public List<int[][]> getTrapLocations() {
+    public List<int[]> getTrapLocations() {
         return trapLocations;
     }
 
-    public List<int[][]> getExitLocations() {
+    public List<int[]> getExitLocations() {
         return exitLocations;
     }
 
-    public List<int[][]> getEnemyLocations() {
+    public List<int[]> getEnemyLocations() {
         return enemyLocations;
     }
 
