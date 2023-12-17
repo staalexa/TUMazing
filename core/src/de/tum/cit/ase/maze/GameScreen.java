@@ -9,11 +9,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import de.tum.cit.ase.maze.entitity.Character;
+import de.tum.cit.ase.maze.hud.HUD;
 import de.tum.cit.ase.maze.map.MazeLoader;
 
-import java.util.Arrays;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 /**
  * The GameScreen class is responsible for rendering the gameplay screen.
@@ -29,6 +28,7 @@ public class GameScreen implements Screen {
     private MazeLoader mazeLoader;
     private Texture tiles, objects;
     private Character character;
+    private HUD hud;
 
     /**
      * Constructor for GameScreen. Sets up the camera and font.
@@ -54,6 +54,7 @@ public class GameScreen implements Screen {
         mazeLoader = new MazeLoader("level-1"); // set level here for now
         int[] entryLocation = mazeLoader.getEntryLocation();
         character = new Character(mazeLoader.multiplyByScale(entryLocation[0]), mazeLoader.multiplyByScale(entryLocation[1]));
+        hud = new HUD(spriteBatch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), objects, 5);
     }
 
     // Screen interface methods with necessary functionality
@@ -70,6 +71,7 @@ public class GameScreen implements Screen {
         renderMaze();
         drawSomething(character.drawCharacter, delta);
         character.moveCharacter();
+        hud.draw();
     }
 
     @Override
