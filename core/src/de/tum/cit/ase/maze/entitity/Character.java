@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import de.tum.cit.ase.maze.MazeRunnerGame;
 import de.tum.cit.ase.maze.map.MazeLoader;
-
 import java.util.function.BiConsumer;
 
 import static de.tum.cit.ase.maze.map.MazeLoader.convertToMapPosition;
@@ -17,7 +16,6 @@ public class Character {
     private boolean hasKey;
     private int lives;
     private int speed;
-
 
     public Character(float x, float y) {
         this.x = x;

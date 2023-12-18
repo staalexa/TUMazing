@@ -125,4 +125,8 @@ public class GameScreen implements Screen {
         drawFunction.accept(sinusInput, game);
         spriteBatch.end();
     }
+
+    public HUD getHud() {
+        return hud;
+    }
 }
