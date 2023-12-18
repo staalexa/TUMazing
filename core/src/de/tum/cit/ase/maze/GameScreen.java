@@ -51,9 +51,8 @@ public class GameScreen implements Screen {
         objects = new Texture(Gdx.files.internal("assets/objects.png"));
 
         spriteBatch = game.getSpriteBatch();
-        maze = new Maze("level-1"); // set level here for now
-        int[] entryLocation = maze.getEntryLocation();
-        character = new Character(entryLocation[0] * 16, entryLocation[1] * 16); //TODO make this look nice at some point
+        maze = new Maze("level-3"); // set level here for now
+        character = new Character(maze.getEntryLocation()); //TODO make this look nice at some point
         hud = new HUD(spriteBatch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), objects, 5);
     }
 
@@ -73,7 +72,7 @@ public class GameScreen implements Screen {
         drawSomething(character.drawCharacter, sinusInput);
 
         character.moveCharacter(maze);
-        camera.position.set(character.getX(), character.getY(), 0);
+        camera.position.set(character.getPosition().getX(), character.getPosition().getY(), 0);
         hud.draw();
     }
 
