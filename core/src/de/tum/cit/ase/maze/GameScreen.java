@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import de.tum.cit.ase.maze.entitity.Character;
 import de.tum.cit.ase.maze.hud.HUD;
-import de.tum.cit.ase.maze.map.MazeLoader;
+import de.tum.cit.ase.maze.map.Maze;
 
 import java.util.function.BiConsumer;
 
@@ -25,7 +25,7 @@ public class GameScreen implements Screen {
     private final BitmapFont font;
     private float sinusInput = 0f;
     private final SpriteBatch spriteBatch;
-    private MazeLoader mazeLoader;
+    private Maze maze;
     private Texture tiles, objects;
     private Character character;
     private HUD hud;
@@ -41,7 +41,7 @@ public class GameScreen implements Screen {
         // Create and configure the camera for the game view
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
-        camera.zoom = 1.5f;
+        camera.zoom = 0.15f;
 
         // Get the font from the game's skin
         font = game.getSkin().getFont("font");
@@ -51,9 +51,9 @@ public class GameScreen implements Screen {
         objects = new Texture(Gdx.files.internal("assets/objects.png"));
 
         spriteBatch = game.getSpriteBatch();
-        mazeLoader = new MazeLoader("level-1"); // set level here for now
-        int[] entryLocation = mazeLoader.getEntryLocation();
-        character = new Character(mazeLoader.multiplyByScale(entryLocation[0]), mazeLoader.multiplyByScale(entryLocation[1]));
+        maze = new Maze("level-1"); // set level here for now
+        int[] entryLocation = maze.getEntryLocation();
+        character = new Character(entryLocation[0] * 16, entryLocation[1] * 16); //TODO make this look nice at some point
         hud = new HUD(spriteBatch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), objects, 5);
     }
 
@@ -72,8 +72,7 @@ public class GameScreen implements Screen {
         renderMaze();
         drawSomething(character.drawCharacter, sinusInput);
 
-
-        character.moveCharacter(mazeLoader);
+        character.moveCharacter(maze);
         camera.position.set(character.getX(), character.getY(), 0);
         hud.draw();
     }
@@ -115,7 +114,7 @@ public class GameScreen implements Screen {
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
 
-        mazeLoader.drawMaze(spriteBatch, tiles, objects, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        maze.drawMaze(spriteBatch, tiles, objects);
         spriteBatch.end();
     }
 

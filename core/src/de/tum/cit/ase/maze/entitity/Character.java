@@ -3,10 +3,10 @@ package de.tum.cit.ase.maze.entitity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import de.tum.cit.ase.maze.MazeRunnerGame;
-import de.tum.cit.ase.maze.map.MazeLoader;
+import de.tum.cit.ase.maze.map.Maze;
 import java.util.function.BiConsumer;
 
-import static de.tum.cit.ase.maze.map.MazeLoader.convertToMapPosition;
+import static de.tum.cit.ase.maze.map.Maze.convertToMapPosition;
 
 /**
  * This Class makes a Character move and counts the lives and all the character statuses
@@ -33,26 +33,26 @@ public class Character {
      */
     public BiConsumer<Float, MazeRunnerGame> drawCharacter = (sinusInput, game) ->
             game.getSpriteBatch().draw(
-                    game.getCharacterDownAnimation().getKeyFrame(sinusInput, true), x, y, 64, 128
+                    game.getCharacterDownAnimation().getKeyFrame(sinusInput, true), x, y, 12, 25
             );
 
     /**
      * Move the character based on the keypad input, works with the arrows and the WASD
      *
-     * @param mazeLoader the maze loader class, so we can check whether there is a wall
+     * @param maze the maze loader class, so we can check whether there is a wall
      */
-    public void moveCharacter(MazeLoader mazeLoader) {
+    public void moveCharacter(Maze maze) {
         if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP))
-            if (!mazeLoader.isWall(new int[]{convertToMapPosition(x), convertToMapPosition(incrementY())}))
+            if (!maze.isWall(new int[]{convertToMapPosition(x), convertToMapPosition(incrementY())}))
                 y = incrementY();
         if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN))
-            if (!mazeLoader.isWall(new int[]{convertToMapPosition(x), convertToMapPosition(decrementY())}))
+            if (!maze.isWall(new int[]{convertToMapPosition(x), convertToMapPosition(decrementY())}))
                 y = decrementY();
         if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-            if (!mazeLoader.isWall(new int[]{convertToMapPosition(incrementX()), convertToMapPosition(y)}))
+            if (!maze.isWall(new int[]{convertToMapPosition(incrementX()), convertToMapPosition(y)}))
                 x = incrementX();
         if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT))
-            if (!mazeLoader.isWall(new int[]{convertToMapPosition(decrementX()), convertToMapPosition(y)}))
+            if (!maze.isWall(new int[]{convertToMapPosition(decrementX()), convertToMapPosition(y)}))
                 x = decrementX();
     }
 

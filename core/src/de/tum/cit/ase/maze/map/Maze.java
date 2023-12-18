@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * This Class takes a levelName and loads the Map from the level file.
  */
-public class MazeLoader {
+public class Maze {
     private final int[][] mapData;
     private static int scale;
     private static int tileSize;
@@ -24,7 +24,7 @@ public class MazeLoader {
     private int[] entryLocation, keyLocation;
     private List<int[]> trapLocations, exitLocations, enemyLocations;
 
-    public MazeLoader(String levelName) {
+    public Maze(String levelName) {
         width = 20;
         height = 20;
 
@@ -38,7 +38,6 @@ public class MazeLoader {
             Arrays.fill(row, 9);
         }
         loadMap(levelName);
-        scale = 5;
         tileSize = 16;
     }
 
@@ -106,7 +105,7 @@ public class MazeLoader {
      * @param screenHeight Screen height
      * @param screenWidth  Screen width
      */
-    public void drawMaze(SpriteBatch spriteBatch, Texture tiles, Texture objects, int screenWidth, int screenHeight) {
+    public void drawMaze(SpriteBatch spriteBatch, Texture tiles, Texture objects) {
         // Get all textures
         TextureRegion[][] textureRegions = TextureRegion.split(tiles, tileSize, tileSize);
         TextureRegion[][] objectRegions = TextureRegion.split(objects, tileSize, tileSize);
@@ -117,26 +116,23 @@ public class MazeLoader {
         trapTexture = textureRegions[6][5];
         keyTexture = objectRegions[4][1];
 
-        int mapWidth = mapData.length * tileSize * scale; // 16 as textures are 16x16px
-        int mapHeight = mapData[0].length * tileSize * scale;
+        int mapWidth = mapData.length * tileSize; // 16 as textures are 16x16px
+        int mapHeight = mapData[0].length * tileSize;
 
-        // Calculate the offsets to center the map on the screen
-        float xOffset = (screenWidth - mapWidth) / 2f;
-        float yOffset = (screenHeight - mapHeight) / 2f;
 
         for (int y = mapData[1].length - 1; y >= 0; y--) {
             for (int x = 0; x < mapData[0].length; x++) {
-                float xPos = x * wallTexture.getRegionWidth() * scale; // Calculate x position
-                float yPos = y * wallTexture.getRegionHeight() * scale; // Calculate y position
+                float xPos = x * wallTexture.getRegionWidth(); // Calculate x position
+                float yPos = y * wallTexture.getRegionHeight(); // Calculate y position
 
                 switch (mapData[x][y]) {
-                    case 0 -> drawTextureWithScale(spriteBatch, xPos, yPos, wallTexture, scale);
-                    //case 1 -> drawTextureWithScale(spriteBatch, xPos, yPos, entryTexture, scale);
-                    case 2 -> drawTextureWithScale(spriteBatch, xPos, yPos, exitTexture, scale);
-                    case 3 -> drawTextureWithScale(spriteBatch, xPos, yPos, trapTexture, scale);
+                    case 0 -> drawTexture(spriteBatch, xPos, yPos, wallTexture);
+                    //case 1 -> drawTexture(spriteBatch, xPos, yPos, entryTexture, scale);
+                    case 2 -> drawTexture(spriteBatch, xPos, yPos, exitTexture);
+                    case 3 -> drawTexture(spriteBatch, xPos, yPos, trapTexture);
                     //case 4 -> System.out.print("M"); //TODO create the mobs later
-                    case 5 -> drawTextureWithScale(spriteBatch, xPos, yPos, keyTexture, scale);
-                    //default -> drawTextureWithScale(spriteBatch, xPos, yPos, pathTexture, scale);
+                    case 5 -> drawTexture(spriteBatch, xPos, yPos, keyTexture);
+                    //default -> drawTexture(spriteBatch, xPos, yPos, pathTexture, scale);
                 }
             }
         }
@@ -151,18 +147,8 @@ public class MazeLoader {
      * @param region Texture part
      * @param scale  Scale
      */
-    private void drawTextureWithScale(SpriteBatch batch, float xPos, float yPos, TextureRegion region, int scale) {
-        batch.draw(region, xPos, yPos, region.getRegionWidth() * scale, region.getRegionHeight() * scale);
-    }
-
-    /**
-     * Multiply a number by the scale and the tile size to get the matrix position into an actual map position
-     *
-     * @param number the number that you want to convert
-     * @return the converted number
-     */
-    public float multiplyByScale(float number) {
-        return number * scale * tileSize;
+    private void drawTexture(SpriteBatch batch, float xPos, float yPos, TextureRegion region) {
+        batch.draw(region, xPos, yPos, region.getRegionWidth(), region.getRegionHeight());
     }
 
     /**
@@ -172,7 +158,7 @@ public class MazeLoader {
      * @return the converted number
      */
     public static int convertToMapPosition(float number) {
-        return Math.round(number / 5 / 16);
+        return Math.round(number / tileSize);
     }
 
     // Getters
