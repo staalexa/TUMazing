@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import de.tum.cit.ase.maze.MazeRunnerGame;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import de.tum.cit.ase.maze.util.LivesManager;
 
 import java.util.function.BiConsumer;
 
@@ -13,12 +14,11 @@ public class Character {
     private int lives;
     private int speed;
 
-
     public Character(float x, float y) {
         this.x = x;
         this.y = y;
         hasKey = false;
-        lives = 3;
+        lives = LivesManager.getMaxLives();
         speed = 2;
     }
 

@@ -122,4 +122,8 @@ public class MazeRunnerGame extends Game {
     public SpriteBatch getSpriteBatch() {
         return spriteBatch;
     }
+
+    public GameScreen getGameScreen() {
+        return gameScreen;
+    }
 }

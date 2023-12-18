@@ -121,4 +121,8 @@ public class GameScreen implements Screen {
         drawFunction.accept(delta, game);
         spriteBatch.end();
     }
+
+    public HUD getHud() {
+        return hud;
+    }
 }
