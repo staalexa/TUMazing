@@ -67,10 +67,14 @@ public class GameScreen implements Screen {
 
         camera.update(); // Update the camera
 
+        sinusInput += delta;
 
         renderMaze();
-        drawSomething(character.drawCharacter, delta);
-        character.moveCharacter();
+        drawSomething(character.drawCharacter, sinusInput);
+
+
+        character.moveCharacter(mazeLoader);
+        camera.position.set(character.getX(), character.getY(), 0);
         hud.draw();
     }
 
@@ -115,10 +119,10 @@ public class GameScreen implements Screen {
         spriteBatch.end();
     }
 
-    public void drawSomething(BiConsumer<Float, MazeRunnerGame> drawFunction, float delta) {
+    public void drawSomething(BiConsumer<Float, MazeRunnerGame> drawFunction, float sinusInput) {
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
-        drawFunction.accept(delta, game);
+        drawFunction.accept(sinusInput, game);
         spriteBatch.end();
     }
 }

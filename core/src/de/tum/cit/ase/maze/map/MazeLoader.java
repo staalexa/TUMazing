@@ -17,6 +17,8 @@ import java.util.List;
  */
 public class MazeLoader {
     private final int[][] mapData;
+    private static int scale;
+    private static int tileSize;
     private int width, height;
     private TextureRegion wallTexture, pathTexture, entryTexture, exitTexture, trapTexture, keyTexture;
     private int[] entryLocation, keyLocation;
@@ -32,14 +34,17 @@ public class MazeLoader {
 
         getProperties(levelName);
         mapData = new int[width][height];
-        for(int[] row : mapData) {
+        for (int[] row : mapData) {
             Arrays.fill(row, 9);
         }
         loadMap(levelName);
+        scale = 5;
+        tileSize = 16;
     }
 
     /**
      * Looks for the Height and Width values in the map file
+     *
      * @param levelName
      */
     private void getProperties(String levelName) {
@@ -47,11 +52,11 @@ public class MazeLoader {
         BufferedReader reader = new BufferedReader(fileHandle.reader());
         try {
             String line;
-            while((line = reader.readLine()) != null) {
-                if(line.startsWith("H") || line.startsWith("W")) {
+            while ((line = reader.readLine()) != null) {
+                if (line.startsWith("H") || line.startsWith("W")) {
                     String[] splitData = line.split("=");
-                    if(splitData[0].equals("Height")) height = Integer.parseInt(splitData[1]);
-                    if(splitData[0].equals("Width")) width = Integer.parseInt(splitData[1]);
+                    if (splitData[0].equals("Height")) height = Integer.parseInt(splitData[1]);
+                    if (splitData[0].equals("Width")) width = Integer.parseInt(splitData[1]);
                 }
             }
         } catch (IOException e) {
@@ -61,6 +66,7 @@ public class MazeLoader {
 
     /**
      * Load the map from the level name. Assumes that level files are like the given template
+     *
      * @param levelName
      */
     private void loadMap(String levelName) {
@@ -69,20 +75,20 @@ public class MazeLoader {
 
         try {
             String line;
-            while((line = reader.readLine()) != null) {
+            while ((line = reader.readLine()) != null) {
                 String[] splitData = line.split("=");
                 String[] coordinates = splitData[0].split(",");
-                if(splitData[0].startsWith("W") || splitData[0].startsWith("H")) continue; // filter out the metadata
+                if (splitData[0].startsWith("W") || splitData[0].startsWith("H")) continue; // filter out the metadata
                 int x = Integer.parseInt(coordinates[0]);
                 int y = Integer.parseInt(coordinates[1]);
                 int type = Integer.parseInt(splitData[1]);
                 mapData[x][y] = type;
                 switch (type) {
-                    case 1 -> entryLocation = new int[]{x,y};
-                    case 2 -> exitLocations.add(new int[]{x,y});
-                    case 3 -> trapLocations.add(new int[]{x,y});
-                    case 4 -> enemyLocations.add(new int[]{x,y});
-                    case 5 -> keyLocation = new int[]{x,y};
+                    case 1 -> entryLocation = new int[]{x, y};
+                    case 2 -> exitLocations.add(new int[]{x, y});
+                    case 3 -> trapLocations.add(new int[]{x, y});
+                    case 4 -> enemyLocations.add(new int[]{x, y});
+                    case 5 -> keyLocation = new int[]{x, y};
                 }
             }
             reader.close();
@@ -93,17 +99,17 @@ public class MazeLoader {
 
     /**
      * Draws a maze out of a given Map. Creates predefined texture regions.
-     * @param spriteBatch SpriteBatch
-     * @param tiles Texture of all possible Tiles
-     * @param objects Texture of all possible Objects
+     *
+     * @param spriteBatch  SpriteBatch
+     * @param tiles        Texture of all possible Tiles
+     * @param objects      Texture of all possible Objects
      * @param screenHeight Screen height
-     * @param screenWidth Screen width
+     * @param screenWidth  Screen width
      */
     public void drawMaze(SpriteBatch spriteBatch, Texture tiles, Texture objects, int screenWidth, int screenHeight) {
-        int scale = 5;
         // Get all textures
-        TextureRegion[][] textureRegions = TextureRegion.split(tiles, 16, 16);
-        TextureRegion[][] objectRegions = TextureRegion.split(objects, 16, 16);
+        TextureRegion[][] textureRegions = TextureRegion.split(tiles, tileSize, tileSize);
+        TextureRegion[][] objectRegions = TextureRegion.split(objects, tileSize, tileSize);
         wallTexture = textureRegions[0][0];
         pathTexture = textureRegions[0][5];
         entryTexture = textureRegions[6][2];
@@ -111,15 +117,15 @@ public class MazeLoader {
         trapTexture = textureRegions[6][5];
         keyTexture = objectRegions[4][1];
 
-        int mapWidth = mapData.length * 16 * scale; // 16 as textures are 16x16px
-        int mapHeight = mapData[0].length * 16 * scale;
+        int mapWidth = mapData.length * tileSize * scale; // 16 as textures are 16x16px
+        int mapHeight = mapData[0].length * tileSize * scale;
 
         // Calculate the offsets to center the map on the screen
         float xOffset = (screenWidth - mapWidth) / 2f;
         float yOffset = (screenHeight - mapHeight) / 2f;
 
         for (int y = mapData[1].length - 1; y >= 0; y--) {
-            for(int x = 0; x < mapData[0].length; x++) {
+            for (int x = 0; x < mapData[0].length; x++) {
                 float xPos = x * wallTexture.getRegionWidth() * scale; // Calculate x position
                 float yPos = y * wallTexture.getRegionHeight() * scale; // Calculate y position
 
@@ -138,23 +144,51 @@ public class MazeLoader {
 
     /**
      * Helper method to make drawing textures easier
-     * @param batch SpriteBatch
-     * @param xPos x Position
-     * @param yPos y Position
+     *
+     * @param batch  SpriteBatch
+     * @param xPos   x Position
+     * @param yPos   y Position
      * @param region Texture part
-     * @param scale Scale
+     * @param scale  Scale
      */
     private void drawTextureWithScale(SpriteBatch batch, float xPos, float yPos, TextureRegion region, int scale) {
         batch.draw(region, xPos, yPos, region.getRegionWidth() * scale, region.getRegionHeight() * scale);
     }
 
-    public float multiplyByScale(float number){
-        return number * 5 * 16;
+    /**
+     * Multiply a number by the scale and the tile size to get the matrix position into an actual map position
+     *
+     * @param number the number that you want to convert
+     * @return the converted number
+     */
+    public float multiplyByScale(float number) {
+        return number * scale * tileSize;
+    }
+
+    /**
+     * Converts a number into a position of the map by multiplying by scale and tile size
+     *
+     * @param number the number that you want to convert
+     * @return the converted number
+     */
+    public static int convertToMapPosition(float number) {
+        return Math.round(number / 5 / 16);
     }
 
     // Getters
-    public boolean isWall(int x, int y) {
-        return mapData[x][y] == 0;
+
+    /**
+     * checks if a given position is a wall on the map
+     *
+     * @param position a position array consisting of two values, x and y
+     * @return a boolean variable, whether there is a wall there
+     */
+    public boolean isWall(int[] position) {
+        // check for out of bounds
+        if (position[0] < 0 || position[1] < 0 || position[1] > mapData.length || position[0] > mapData[0].length)
+            return true;
+        // check for wall
+        return mapData[position[0]][position[1]] == 0;
     }
 
     public int[] getEntryLocation() {
@@ -186,9 +220,9 @@ public class MazeLoader {
      */
     public void printMapData() {
         for (int y = mapData[1].length - 1; y >= 0; y--) {
-            System.out.println("Data for row "  + y);
-            for(int x = 0; x < mapData[0].length; x++) {
-                if(mapData[x][y] == 0)
+            System.out.println("Data for row " + y);
+            for (int x = 0; x < mapData[0].length; x++) {
+                if (mapData[x][y] == 0)
                     System.out.println("Wall at pos: " + x + "," + y);
             }
             System.out.println(); // new line for formatting
@@ -200,7 +234,7 @@ public class MazeLoader {
      */
     public void printMap() {
         for (int y = mapData[1].length - 1; y >= 0; y--) {
-            for(int x = 0; x < mapData[0].length; x++) {
+            for (int x = 0; x < mapData[0].length; x++) {
                 switch (mapData[x][y]) {
                     case 0 -> System.out.print("x");
                     case 1 -> System.out.print("E");
