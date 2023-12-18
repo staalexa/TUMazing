@@ -5,6 +5,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import de.tum.cit.ase.maze.util.Position;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,8 +22,8 @@ public class Maze {
     private static int tileSize;
     private int width, height;
     private TextureRegion wallTexture, pathTexture, entryTexture, exitTexture, trapTexture, keyTexture;
-    private int[] entryLocation, keyLocation;
-    private List<int[]> trapLocations, exitLocations, enemyLocations;
+    private Position entryLocation, keyLocation;
+    private List<Position> trapLocations, exitLocations, enemyLocations;
 
     public Maze(String levelName) {
         width = 20;
@@ -83,11 +84,11 @@ public class Maze {
                 int type = Integer.parseInt(splitData[1]);
                 mapData[x][y] = type;
                 switch (type) {
-                    case 1 -> entryLocation = new int[]{x, y};
-                    case 2 -> exitLocations.add(new int[]{x, y});
-                    case 3 -> trapLocations.add(new int[]{x, y});
-                    case 4 -> enemyLocations.add(new int[]{x, y});
-                    case 5 -> keyLocation = new int[]{x, y};
+                    case 1 -> entryLocation = new Position(x, y, true);
+                    case 2 -> exitLocations.add(new Position(x, y, true));
+                    case 3 -> trapLocations.add(new Position(x, y, true));
+                    case 4 -> enemyLocations.add(new Position(x, y, true));
+                    case 5 -> keyLocation = new Position(x, y, true);
                 }
             }
             reader.close();
@@ -99,11 +100,9 @@ public class Maze {
     /**
      * Draws a maze out of a given Map. Creates predefined texture regions.
      *
-     * @param spriteBatch  SpriteBatch
-     * @param tiles        Texture of all possible Tiles
-     * @param objects      Texture of all possible Objects
-     * @param screenHeight Screen height
-     * @param screenWidth  Screen width
+     * @param spriteBatch SpriteBatch
+     * @param tiles       Texture of all possible Tiles
+     * @param objects     Texture of all possible Objects
      */
     public void drawMaze(SpriteBatch spriteBatch, Texture tiles, Texture objects) {
         // Get all textures
@@ -145,7 +144,6 @@ public class Maze {
      * @param xPos   x Position
      * @param yPos   y Position
      * @param region Texture part
-     * @param scale  Scale
      */
     private void drawTexture(SpriteBatch batch, float xPos, float yPos, TextureRegion region) {
         batch.draw(region, xPos, yPos, region.getRegionWidth(), region.getRegionHeight());
@@ -166,34 +164,36 @@ public class Maze {
     /**
      * checks if a given position is a wall on the map
      *
-     * @param position a position array consisting of two values, x and y
+     * @param x value x in the pixel position of the map
+     * @param y value y in the pixel position of the map
      * @return a boolean variable, whether there is a wall there
      */
-    public boolean isWall(int[] position) {
+    public boolean isWall(int x, int y) {
+        x /= 16;
+        y /= 16;
         // check for out of bounds
-        if (position[0] < 0 || position[1] < 0 || position[1] > mapData.length || position[0] > mapData[0].length)
-            return true;
+        if (x < 0 || y < 0 || y > mapData.length || x > mapData[0].length) return true;
         // check for wall
-        return mapData[position[0]][position[1]] == 0;
+        return mapData[x][y] == 0;
     }
 
-    public int[] getEntryLocation() {
+    public Position getEntryLocation() {
         return entryLocation;
     }
 
-    public int[] getKeyLocation() {
+    public Position getKeyLocation() {
         return keyLocation;
     }
 
-    public List<int[]> getTrapLocations() {
+    public List<Position> getTrapLocations() {
         return trapLocations;
     }
 
-    public List<int[]> getExitLocations() {
+    public List<Position> getExitLocations() {
         return exitLocations;
     }
 
-    public List<int[]> getEnemyLocations() {
+    public List<Position> getEnemyLocations() {
         return enemyLocations;
     }
 
