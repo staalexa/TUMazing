@@ -53,7 +53,7 @@ public class GameScreen implements Screen {
         objects = new Texture(Gdx.files.internal("assets/objects.png"));
 
         spriteBatch = game.getSpriteBatch();
-        key = new Key(game);
+        key = new Key();
         maze = new Maze("level-1", key); // set level here for now
         character = new Character(maze.getEntryLocation()); //TODO make this look nice at some point
         hud = new HUD(spriteBatch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), objects, 5);
@@ -77,6 +77,7 @@ public class GameScreen implements Screen {
         character.moveCharacter(maze);
         camera.position.set(character.getPosition().getX(), character.getPosition().getY(), 0);
         hud.draw();
+        checkEnvironment();
     }
 
     @Override
@@ -125,6 +126,15 @@ public class GameScreen implements Screen {
         spriteBatch.begin();
         drawFunction.accept(sinusInput, game);
         spriteBatch.end();
+    }
+
+    /**
+     * Check for environmental influence on the placer
+     */
+    public void checkEnvironment() {
+        if (character.getPosition().equals(key.getPosition())) {
+            key.pickUp(this);
+        }
     }
 
     public HUD getHud() {

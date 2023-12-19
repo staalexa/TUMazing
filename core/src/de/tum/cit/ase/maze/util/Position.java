@@ -2,6 +2,8 @@ package de.tum.cit.ase.maze.util;
 
 import de.tum.cit.ase.maze.map.Maze;
 
+import java.util.Objects;
+
 /**
  * Position class which represents a position on the map in pixels
  */
@@ -70,6 +72,19 @@ public class Position {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Position position = (Position) o;
+        return x == position.x && y == position.y;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
+    }
+
     public int getX() {
         return x;
     }
@@ -77,4 +92,5 @@ public class Position {
     public int getY() {
         return y;
     }
+
 }
