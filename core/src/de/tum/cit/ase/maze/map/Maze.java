@@ -5,6 +5,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import de.tum.cit.ase.maze.util.Key;
 import de.tum.cit.ase.maze.util.Position;
 
 import java.io.BufferedReader;
@@ -24,8 +25,10 @@ public class Maze {
     private TextureRegion wallTexture, pathTexture, entryTexture, exitTexture, trapTexture, keyTexture;
     private Position entryLocation, keyLocation;
     private List<Position> trapLocations, exitLocations, enemyLocations;
+    private Key key;
 
-    public Maze(String levelName) {
+    public Maze(String levelName, Key key) {
+        this.key = key;
         width = 20;
         height = 20;
 
@@ -88,7 +91,7 @@ public class Maze {
                     case 2 -> exitLocations.add(new Position(x, y, true));
                     case 3 -> trapLocations.add(new Position(x, y, true));
                     case 4 -> enemyLocations.add(new Position(x, y, true));
-                    case 5 -> keyLocation = new Position(x, y, true);
+                    case 5 -> key.setPosition(new Position(x, y, true)); // set the key position
                 }
             }
             reader.close();

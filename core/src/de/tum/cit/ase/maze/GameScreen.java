@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import de.tum.cit.ase.maze.entitity.Character;
 import de.tum.cit.ase.maze.hud.HUD;
 import de.tum.cit.ase.maze.map.Maze;
+import de.tum.cit.ase.maze.util.Key;
 
 import java.util.function.BiConsumer;
 
@@ -29,6 +30,7 @@ public class GameScreen implements Screen {
     private Texture tiles, objects;
     private Character character;
     private HUD hud;
+    private Key key;
 
     /**
      * Constructor for GameScreen. Sets up the camera and font.
@@ -51,7 +53,8 @@ public class GameScreen implements Screen {
         objects = new Texture(Gdx.files.internal("assets/objects.png"));
 
         spriteBatch = game.getSpriteBatch();
-        maze = new Maze("level-3"); // set level here for now
+        key = new Key(game);
+        maze = new Maze("level-1", key); // set level here for now
         character = new Character(maze.getEntryLocation()); //TODO make this look nice at some point
         hud = new HUD(spriteBatch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), objects, 5);
     }
@@ -126,5 +129,14 @@ public class GameScreen implements Screen {
 
     public HUD getHud() {
         return hud;
+    }
+
+
+    public Maze getMaze() {
+        return maze;
+    }
+
+    public Character getCharacter() {
+        return character;
     }
 }
