@@ -72,6 +72,18 @@ public class Position {
         }
     }
 
+    /**
+     * Calculates threashold distance between two positions
+     * @param other Another position
+     * @return true if the two positions have max the range 5 between them (translates to when the positions are the same)
+     */
+    public boolean isWithinRange(Position other) {
+        float xDifference = Math.abs(this.getX() - other.getX());
+        float yDifference = Math.abs(this.getY() - other.getY());
+
+        return xDifference <= 5 && yDifference <= 5;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -132,9 +132,8 @@ public class GameScreen implements Screen {
      * Check for environmental influence on the placer
      */
     public void checkEnvironment() {
-        if (character.getPosition().equals(key.getPosition())) {
+        if(character.getPosition().isWithinRange(key.getPosition()))
             key.pickUp(this);
-        }
     }
 
     public HUD getHud() {

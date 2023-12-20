@@ -28,7 +28,7 @@ public class Key {
 
         screen.getHud().collectedKey(true);
         screen.getCharacter().setHasKey(true);
-        //TODO Hide the key from the map
+        screen.getMaze().removeKey(position);
         return true;
     }
 

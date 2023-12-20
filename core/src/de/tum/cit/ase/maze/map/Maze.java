@@ -118,10 +118,6 @@ public class Maze {
         trapTexture = textureRegions[6][5];
         keyTexture = objectRegions[4][1];
 
-        int mapWidth = mapData.length * tileSize; // 16 as textures are 16x16px
-        int mapHeight = mapData[0].length * tileSize;
-
-
         for (int y = mapData[1].length - 1; y >= 0; y--) {
             for (int x = 0; x < mapData[0].length; x++) {
                 float xPos = x * wallTexture.getRegionWidth(); // Calculate x position
@@ -138,6 +134,14 @@ public class Maze {
                 }
             }
         }
+    }
+
+    /**
+     * Removes the key from given position
+     * @param position The key's position
+     */
+    public void removeKey(Position position) {
+        mapData[position.getX() / 16][position.getY() / 16] = 9;
     }
 
     /**
