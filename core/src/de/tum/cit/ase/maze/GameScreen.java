@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import de.tum.cit.ase.maze.entitity.Character;
+import de.tum.cit.ase.maze.entitity.Mob;
 import de.tum.cit.ase.maze.hud.HUD;
 import de.tum.cit.ase.maze.map.Maze;
 import de.tum.cit.ase.maze.map.Key;
@@ -30,7 +31,7 @@ public class GameScreen implements Screen {
     private float sinusInput = 0f;
     private final SpriteBatch spriteBatch;
     private Maze maze;
-    private Texture tiles, objects;
+    private Texture tiles, objects, mobs;
     private Character character;
     private HUD hud;
     private Key key;
@@ -54,6 +55,7 @@ public class GameScreen implements Screen {
         //Get textures
         tiles = new Texture(Gdx.files.internal("assets/basictiles.png"));
         objects = new Texture(Gdx.files.internal("assets/objects.png"));
+        mobs = new Texture(Gdx.files.internal("assets/mobs.png"));
 
         spriteBatch = game.getSpriteBatch();
         key = new Key();
@@ -81,6 +83,7 @@ public class GameScreen implements Screen {
         camera.position.set(character.getPosition().getX(), character.getPosition().getY(), 0);
         hud.draw();
         checkEnvironment();
+        moveMobs();
     }
 
     @Override
@@ -109,6 +112,7 @@ public class GameScreen implements Screen {
     public void dispose() {
         tiles.dispose();
         objects.dispose();
+        mobs.dispose();
     }
 
     // Additional methods and logic can be added as needed for the game screen
@@ -120,10 +124,15 @@ public class GameScreen implements Screen {
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
 
-        maze.drawMaze(spriteBatch, tiles, objects);
+        maze.drawMaze(spriteBatch, tiles, objects, mobs);
         spriteBatch.end();
     }
 
+    /**
+     * Method to draw anything in the screen
+     * @param drawFunction pass in a function, with the thing that you want to draw
+     * @param sinusInput is derived from the delta value, needed for the walking effect
+     */
     public void drawSomething(BiConsumer<Float, MazeRunnerGame> drawFunction, float sinusInput) {
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
@@ -151,6 +160,21 @@ public class GameScreen implements Screen {
         // Cleanup
         for(Position trapPosition : activatedTraps)
             maze.getTrapLocations().remove(trapPosition);
+
+        // Handles Mobs
+        for(Mob mob : maze.getMobs())
+            if(character.getPosition().isWithinRange(mob.getPosition()) && mob.getLives() > 0) {
+                mob.setLives(0);
+                hud.loseLife(); //TODO replace this by the actual live loosing system
+            }
+    }
+
+    /**
+     * Call the movement methods of the mobs
+     */
+    public void moveMobs(){
+        for (Mob mob: maze.getMobs())
+            mob.moveMob(maze);
     }
 
     public HUD getHud() {

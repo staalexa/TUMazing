@@ -73,7 +73,7 @@ public class Position {
     }
 
     /**
-     * Calculates threashold distance between two positions
+     * Calculates threshold distance between two positions
      * @param other Another position
      * @return true if the two positions have max the range 5 between them (translates to when the positions are the same)
      */
@@ -104,5 +104,4 @@ public class Position {
     public int getY() {
         return y;
     }
-
 }

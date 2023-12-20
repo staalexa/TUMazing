@@ -5,6 +5,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import de.tum.cit.ase.maze.entitity.Mob;
 import de.tum.cit.ase.maze.util.Position;
 
 import java.io.BufferedReader;
@@ -18,12 +19,13 @@ import java.util.List;
  */
 public class Maze {
     private final int[][] mapData;
-    private static int scale;
     private static int tileSize;
     private int width, height;
-    private TextureRegion wallTexture, pathTexture, entryTexture, exitTexture, trapTexture, keyTexture;
+    private TextureRegion wallTexture, pathTexture, entryTexture, exitTexture, trapTexture,
+    keyTexture, enemyTexture;
     private Position entryLocation, keyLocation;
-    private List<Position> trapLocations, exitLocations, enemyLocations;
+    private List<Position> trapLocations, exitLocations;
+    private List<Mob> mobs;
     private Key key;
 
     public Maze(String levelName, Key key) {
@@ -33,13 +35,12 @@ public class Maze {
 
         trapLocations = new ArrayList<>();
         exitLocations = new ArrayList<>();
-        enemyLocations = new ArrayList<>();
+        mobs = new ArrayList<>();
 
         getProperties(levelName);
         mapData = new int[width][height];
-        for (int[] row : mapData) {
+        for (int[] row : mapData)
             Arrays.fill(row, 9);
-        }
         loadMap(levelName);
         tileSize = 16;
     }
@@ -89,7 +90,7 @@ public class Maze {
                     case 1 -> entryLocation = new Position(x, y, true);
                     case 2 -> exitLocations.add(new Position(x, y, true));
                     case 3 -> trapLocations.add(new Position(x, y, true));
-                    case 4 -> enemyLocations.add(new Position(x, y, true));
+                    case 4 -> mobs.add(new Mob(new Position(x, y, true)));
                     case 5 -> key.setPosition(new Position(x, y, true)); // set the key position
                 }
             }
@@ -106,28 +107,34 @@ public class Maze {
      * @param tiles       Texture of all possible Tiles
      * @param objects     Texture of all possible Objects
      */
-    public void drawMaze(SpriteBatch spriteBatch, Texture tiles, Texture objects) {
+    public void drawMaze(SpriteBatch spriteBatch, Texture tiles, Texture objects, Texture mobs) {
         // Get all textures
         TextureRegion[][] textureRegions = TextureRegion.split(tiles, tileSize, tileSize);
         TextureRegion[][] objectRegions = TextureRegion.split(objects, tileSize, tileSize);
+        TextureRegion[][] mobRegions = TextureRegion.split(mobs, tileSize, tileSize);
         wallTexture = textureRegions[0][0];
         pathTexture = textureRegions[0][5];
         entryTexture = textureRegions[6][2];
         exitTexture = textureRegions[6][0];
         trapTexture = textureRegions[6][5];
         keyTexture = objectRegions[4][1];
+        enemyTexture = mobRegions[5][9];
+
+        int mobIndex = 0;
 
         for (int y = mapData[1].length - 1; y >= 0; y--) {
             for (int x = 0; x < mapData[0].length; x++) {
                 float xPos = x * wallTexture.getRegionWidth(); // Calculate x position
                 float yPos = y * wallTexture.getRegionHeight(); // Calculate y position
-
                 switch (mapData[x][y]) {
                     case 0 -> drawTexture(spriteBatch, xPos, yPos, wallTexture);
                     //case 1 -> drawTexture(spriteBatch, xPos, yPos, entryTexture, scale);
                     case 2 -> drawTexture(spriteBatch, xPos, yPos, exitTexture);
                     case 3 -> drawTexture(spriteBatch, xPos, yPos, trapTexture);
-                    //case 4 -> System.out.print("M"); //TODO create the mobs later
+                    case 4 -> {
+                        Mob currentMob = this.mobs.get(mobIndex++);
+                        currentMob.drawMob(this, spriteBatch, enemyTexture);
+                    }
                     case 5 -> drawTexture(spriteBatch, xPos, yPos, keyTexture);
                     //default -> drawTexture(spriteBatch, xPos, yPos, pathTexture, scale);
                 }
@@ -169,7 +176,7 @@ public class Maze {
      * @param yPos   y Position
      * @param region Texture part
      */
-    private void drawTexture(SpriteBatch batch, float xPos, float yPos, TextureRegion region) {
+    public void drawTexture(SpriteBatch batch, float xPos, float yPos, TextureRegion region) {
         batch.draw(region, xPos, yPos, region.getRegionWidth(), region.getRegionHeight());
     }
 
@@ -217,8 +224,11 @@ public class Maze {
         return exitLocations;
     }
 
-    public List<Position> getEnemyLocations() {
-        return enemyLocations;
+    public List<Mob> getMobs() {
+        return mobs;
+    }
+    public void removeMob(Mob mob) {
+        mobs.remove(mob);
     }
 
     public int[][] getMapData() {
