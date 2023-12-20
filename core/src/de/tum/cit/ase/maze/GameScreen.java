@@ -11,7 +11,11 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import de.tum.cit.ase.maze.entitity.Character;
 import de.tum.cit.ase.maze.hud.HUD;
 import de.tum.cit.ase.maze.map.Maze;
+import de.tum.cit.ase.maze.map.Key;
+import de.tum.cit.ase.maze.util.Position;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiConsumer;
 
 /**
@@ -29,6 +33,7 @@ public class GameScreen implements Screen {
     private Texture tiles, objects;
     private Character character;
     private HUD hud;
+    private Key key;
 
     /**
      * Constructor for GameScreen. Sets up the camera and font.
@@ -51,7 +56,8 @@ public class GameScreen implements Screen {
         objects = new Texture(Gdx.files.internal("assets/objects.png"));
 
         spriteBatch = game.getSpriteBatch();
-        maze = new Maze("level-3"); // set level here for now
+        key = new Key();
+        maze = new Maze("level-1", key); // set level here for now
         character = new Character(maze.getEntryLocation()); //TODO make this look nice at some point
         hud = new HUD(spriteBatch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), objects, 5);
     }
@@ -74,6 +80,7 @@ public class GameScreen implements Screen {
         character.moveCharacter(maze);
         camera.position.set(character.getPosition().getX(), character.getPosition().getY(), 0);
         hud.draw();
+        checkEnvironment();
     }
 
     @Override
@@ -124,7 +131,38 @@ public class GameScreen implements Screen {
         spriteBatch.end();
     }
 
+    /**
+     * Check for environmental influence on the placer
+     */
+    public void checkEnvironment() {
+        // Handles Key
+        if(character.getPosition().isWithinRange(key.getPosition()))
+            key.pickUp(this);
+
+        // Handles Traps
+        List<Position> activatedTraps = new ArrayList<>();
+        for(Position trapPosition : maze.getTrapLocations()) {
+            if(character.getPosition().isWithinRange(trapPosition)) {
+                maze.activateTrap(trapPosition);
+                activatedTraps.add(trapPosition);
+                hud.loseLife(); //TODO replace this by the actual live loosing system
+            }
+        }
+        // Cleanup
+        for(Position trapPosition : activatedTraps)
+            maze.getTrapLocations().remove(trapPosition);
+    }
+
     public HUD getHud() {
         return hud;
+    }
+
+
+    public Maze getMaze() {
+        return maze;
+    }
+
+    public Character getCharacter() {
+        return character;
     }
 }
