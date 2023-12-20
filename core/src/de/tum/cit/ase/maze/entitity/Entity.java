@@ -18,6 +18,11 @@ public abstract class Entity {
         this.speed = speed;
     }
 
+    /**
+     * Moves the entity by the given parameters
+     * @param direction the direction in which the entity should be moved
+     * @param maze a reference to the maze
+     */
     public void moveEntity(Direction direction, Maze maze){
         position.move(direction, speed, maze);
     };
