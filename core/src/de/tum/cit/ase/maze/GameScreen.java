@@ -11,8 +11,11 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import de.tum.cit.ase.maze.entitity.Character;
 import de.tum.cit.ase.maze.hud.HUD;
 import de.tum.cit.ase.maze.map.Maze;
-import de.tum.cit.ase.maze.util.Key;
+import de.tum.cit.ase.maze.map.Key;
+import de.tum.cit.ase.maze.util.Position;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiConsumer;
 
 /**
@@ -132,8 +135,22 @@ public class GameScreen implements Screen {
      * Check for environmental influence on the placer
      */
     public void checkEnvironment() {
+        // Handles Key
         if(character.getPosition().isWithinRange(key.getPosition()))
             key.pickUp(this);
+
+        // Handles Traps
+        List<Position> activatedTraps = new ArrayList<>();
+        for(Position trapPosition : maze.getTrapLocations()) {
+            if(character.getPosition().isWithinRange(trapPosition)) {
+                maze.activateTrap(trapPosition);
+                activatedTraps.add(trapPosition);
+                hud.loseLife(); //TODO replace this by the actual live loosing system
+            }
+        }
+        // Cleanup
+        for(Position trapPosition : activatedTraps)
+            maze.getTrapLocations().remove(trapPosition);
     }
 
     public HUD getHud() {

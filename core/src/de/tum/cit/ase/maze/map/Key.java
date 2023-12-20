@@ -1,6 +1,7 @@
-package de.tum.cit.ase.maze.util;
+package de.tum.cit.ase.maze.map;
 
 import de.tum.cit.ase.maze.GameScreen;
+import de.tum.cit.ase.maze.util.Position;
 
 /**
  * Handles Key collecting
