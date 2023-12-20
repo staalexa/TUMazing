@@ -193,12 +193,24 @@ public class Maze {
      * @return a boolean variable, whether there is a wall there
      */
     public boolean isWall(int x, int y) {
-        x /= 16;
-        y /= 16;
+        x /= tileSize;
+        y /= tileSize;
         // check for out of bounds
-        if (x < 0 || y < 0 || y > mapData.length || x > mapData[0].length) return true;
+        if (x < 0 || y < 0 || y >= mapData.length || x >= mapData[0].length) return true;
+
+        if(isNotValidExit(x, y)) return true;
         // check for wall
         return mapData[x][y] == 0;
+    }
+
+    /**
+     * Helper method
+     * @param x Position x (not scaled)
+     * @param y Position y (not scaled)
+     * @return returns true if player has not picked up the key, and wants to go on an exit
+     */
+    public boolean isNotValidExit(int x, int y) {
+        return !key.isPickedUp() && (mapData[x][y] == 2);
     }
 
     public Position getEntryLocation() {

@@ -151,6 +151,12 @@ public class GameScreen implements Screen {
         // Cleanup
         for(Position trapPosition : activatedTraps)
             maze.getTrapLocations().remove(trapPosition);
+
+        //Handles Exit
+        for(Position exit : maze.getExitLocations()) {
+            if (character.getPosition().isWithinRange(exit))
+                game.goToMenu(); //TODO add new screen after passing level
+        }
     }
 
     public HUD getHud() {
