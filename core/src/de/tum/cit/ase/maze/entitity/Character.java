@@ -28,7 +28,7 @@ public class Character extends Entity {
      */
     public BiConsumer<Float, MazeRunnerGame> drawCharacter = (sinusInput, game) ->
             game.getSpriteBatch().draw(
-                    game.getCharacterDownAnimation().getKeyFrame(sinusInput, true), position.getX(), position.getY(), 12, 25
+                    game.getCharacterDownAnimation().getKeyFrame(sinusInput, true), getPosition().getX(), getPosition().getY(), 12, 25
             );
 
     /**
