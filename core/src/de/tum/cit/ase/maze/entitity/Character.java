@@ -61,6 +61,14 @@ public class Character {
         return position;
     }
 
+    public boolean hasKey() {
+        return hasKey;
+    }
+
+    public void setHasKey(boolean hasKey) {
+        this.hasKey = hasKey;
+    }
+
     @Override
     public String toString() {
         return "Character{" +

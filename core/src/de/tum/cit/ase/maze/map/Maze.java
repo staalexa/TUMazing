@@ -5,6 +5,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import de.tum.cit.ase.maze.util.Key;
 import de.tum.cit.ase.maze.util.Position;
 
 import java.io.BufferedReader;
@@ -24,8 +25,10 @@ public class Maze {
     private TextureRegion wallTexture, pathTexture, entryTexture, exitTexture, trapTexture, keyTexture;
     private Position entryLocation, keyLocation;
     private List<Position> trapLocations, exitLocations, enemyLocations;
+    private Key key;
 
-    public Maze(String levelName) {
+    public Maze(String levelName, Key key) {
+        this.key = key;
         width = 20;
         height = 20;
 
@@ -88,7 +91,7 @@ public class Maze {
                     case 2 -> exitLocations.add(new Position(x, y, true));
                     case 3 -> trapLocations.add(new Position(x, y, true));
                     case 4 -> enemyLocations.add(new Position(x, y, true));
-                    case 5 -> keyLocation = new Position(x, y, true);
+                    case 5 -> key.setPosition(new Position(x, y, true)); // set the key position
                 }
             }
             reader.close();
@@ -115,10 +118,6 @@ public class Maze {
         trapTexture = textureRegions[6][5];
         keyTexture = objectRegions[4][1];
 
-        int mapWidth = mapData.length * tileSize; // 16 as textures are 16x16px
-        int mapHeight = mapData[0].length * tileSize;
-
-
         for (int y = mapData[1].length - 1; y >= 0; y--) {
             for (int x = 0; x < mapData[0].length; x++) {
                 float xPos = x * wallTexture.getRegionWidth(); // Calculate x position
@@ -135,6 +134,14 @@ public class Maze {
                 }
             }
         }
+    }
+
+    /**
+     * Removes the key from given position
+     * @param position The key's position
+     */
+    public void removeKey(Position position) {
+        mapData[position.getX() / 16][position.getY() / 16] = 9;
     }
 
     /**

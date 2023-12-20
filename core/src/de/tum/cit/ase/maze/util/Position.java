@@ -2,6 +2,8 @@ package de.tum.cit.ase.maze.util;
 
 import de.tum.cit.ase.maze.map.Maze;
 
+import java.util.Objects;
+
 /**
  * Position class which represents a position on the map in pixels
  */
@@ -70,6 +72,31 @@ public class Position {
         }
     }
 
+    /**
+     * Calculates threashold distance between two positions
+     * @param other Another position
+     * @return true if the two positions have max the range 5 between them (translates to when the positions are the same)
+     */
+    public boolean isWithinRange(Position other) {
+        float xDifference = Math.abs(this.getX() - other.getX());
+        float yDifference = Math.abs(this.getY() - other.getY());
+
+        return xDifference <= 5 && yDifference <= 5;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Position position = (Position) o;
+        return x == position.x && y == position.y;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
+    }
+
     public int getX() {
         return x;
     }
@@ -77,4 +104,5 @@ public class Position {
     public int getY() {
         return y;
     }
+
 }
