@@ -5,7 +5,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import de.tum.cit.ase.maze.util.Key;
 import de.tum.cit.ase.maze.util.Position;
 
 import java.io.BufferedReader;
@@ -141,6 +140,24 @@ public class Maze {
      * @param position The key's position
      */
     public void removeKey(Position position) {
+        removeMapObject(position);
+    }
+
+    /**
+     * Removes a trap from the map
+     * @param position Position of the Trap
+     */
+    public void activateTrap(Position position) {
+        removeMapObject(position);
+    }
+
+    /**
+     * Generic method to remove stuff from the map
+     * THIS IS PERMANENT!!!
+     *
+     * @param position Position of the object
+     */
+    private void removeMapObject(Position position) {
         mapData[position.getX() / 16][position.getY() / 16] = 9;
     }
 
