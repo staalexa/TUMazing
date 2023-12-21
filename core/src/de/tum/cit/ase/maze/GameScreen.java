@@ -13,7 +13,7 @@ import de.tum.cit.ase.maze.entitity.Mob;
 import de.tum.cit.ase.maze.hud.HUD;
 import de.tum.cit.ase.maze.map.Maze;
 import de.tum.cit.ase.maze.map.Key;
-import de.tum.cit.ase.maze.util.EndingState;
+import de.tum.cit.ase.maze.util.GameState;
 import de.tum.cit.ase.maze.util.Position;
 
 import java.util.ArrayList;
@@ -172,7 +172,7 @@ public class GameScreen implements Screen {
         //Handles Exit
         for (Position exit : maze.getExitLocations()) {
             if (character.getPosition().isWithinRange(exit))
-                game.goToEnd(EndingState.Victory);
+                game.goToEnd(GameState.VICTORY);
         }
     }
 

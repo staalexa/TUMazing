@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import de.tum.cit.ase.maze.util.EndingState;
+import de.tum.cit.ase.maze.util.GameState;
 
 /**
  * The EndScreen is responsible for the final stage of the game. It is shown after a game is over
@@ -24,7 +24,7 @@ public class EndScreen implements Screen {
      * Constructor of the class, creates a table to show elements
      * @param game MazeRunnerGame
      */
-    public EndScreen(MazeRunnerGame game, EndingState endingState) {
+    public EndScreen(MazeRunnerGame game, GameState gameState) {
         var camera = new OrthographicCamera();
         camera.zoom = 1.5f;
         Viewport viewport = new ScreenViewport(camera);
@@ -34,9 +34,9 @@ public class EndScreen implements Screen {
         table.setFillParent(true);
         stage.addActor(table);
 
-        switch (endingState) {
-            case Victory -> table.add(new Label("Level passed", game.getSkin(), "title")).padBottom(80).row();
-            case NoMoreLives -> table.add(new Label("You died", game.getSkin(), "title")).padBottom(80).row();
+        switch (gameState) {
+            case VICTORY -> table.add(new Label("Level passed", game.getSkin(), "title")).padBottom(80).row();
+            case DEATH -> table.add(new Label("You died", game.getSkin(), "title")).padBottom(80).row();
         }
 
         TextButton goToMenuButton = new TextButton("go to menu", game.getSkin());

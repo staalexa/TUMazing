@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
-import de.tum.cit.ase.maze.util.EndingState;
+import de.tum.cit.ase.maze.util.GameState;
 import games.spooky.gdx.nativefilechooser.NativeFileChooser;
 
 /**
@@ -82,7 +82,7 @@ public class MazeRunnerGame extends Game {
     /**
      * Switches to the end screen
      */
-    public void goToEnd(EndingState endingState) {
+    public void goToEnd(GameState endingState) {
         this.setScreen(new EndScreen(this, endingState));
         if (gameScreen != null) {
             gameScreen.dispose();
