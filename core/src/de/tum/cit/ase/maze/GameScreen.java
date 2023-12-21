@@ -38,6 +38,8 @@ public class GameScreen implements Screen {
     private Key key;
     private GameState gameState;
 
+    private PauseScreen pauseScreen;
+
     /**
      * Constructor for GameScreen. Sets up the camera and font.
      *
@@ -65,31 +67,34 @@ public class GameScreen implements Screen {
         maze = new Maze(levelName, key, game); // set level here for now
         hud = new HUD(spriteBatch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), objects, 5);
         character = new Character(maze.getEntryLocation(), game, hud); //TODO make this look nice at some point
+
+        pauseScreen = new PauseScreen(game);
     }
 
     // Screen interface methods with necessary functionality
     @Override
     public void render(float delta) {
+        if (gameState == GameState.PAUSED) {
+            pauseScreen.render(delta);
+        } else {
+            // Check for escape key press to go to the pause screen
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) pause();
 
-        if (gameState == GameState.PAUSED) return;
+            ScreenUtils.clear(0, 0, 0, 1); // Clear the screen
 
-        // Check for escape key press to go back to the menu
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) pause();
+            camera.update(); // Update the camera
 
-        ScreenUtils.clear(0, 0, 0, 1); // Clear the screen
+            sinusInput += delta;
 
-        camera.update(); // Update the camera
+            renderMaze();
+            drawSomething(character.drawCharacter, sinusInput);
 
-        sinusInput += delta;
-
-        renderMaze();
-        drawSomething(character.drawCharacter, sinusInput);
-
-        character.moveCharacter(maze);
-        camera.position.set(character.getPosition().getX(), character.getPosition().getY(), 0);
-        hud.draw();
-        checkEnvironment();
-        moveMobs();
+            character.moveCharacter(maze);
+            camera.position.set(character.getPosition().getX(), character.getPosition().getY(), 0);
+            hud.draw();
+            checkEnvironment();
+            moveMobs();
+        }
     }
 
     @Override

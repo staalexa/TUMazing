@@ -130,6 +130,13 @@ public class MazeRunnerGame extends Game {
         skin.dispose(); // Dispose the skin
     }
 
+    /**
+     * Resumes the game
+     */
+    public void resumeGame() {
+        gameScreen.resume();
+    }
+
     // Getter methods
     public Skin getSkin() {
         return skin;
