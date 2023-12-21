@@ -130,8 +130,9 @@ public class GameScreen implements Screen {
 
     /**
      * Method to draw anything in the screen
+     *
      * @param drawFunction pass in a function, with the thing that you want to draw
-     * @param sinusInput is derived from the delta value, needed for the walking effect
+     * @param sinusInput   is derived from the delta value, needed for the walking effect
      */
     public void drawSomething(BiConsumer<Float, MazeRunnerGame> drawFunction, float sinusInput) {
         spriteBatch.setProjectionMatrix(camera.combined);
@@ -145,35 +146,35 @@ public class GameScreen implements Screen {
      */
     public void checkEnvironment() {
         // Handles Key
-        if(character.getPosition().isWithinRange(key.getPosition()))
+        if (character.getPosition().isWithinRange(key.getPosition()))
             key.pickUp(this);
 
         // Handles Traps
         List<Position> activatedTraps = new ArrayList<>();
-        for(Position trapPosition : maze.getTrapLocations()) {
-            if(character.getPosition().isWithinRange(trapPosition)) {
+        for (Position trapPosition : maze.getTrapLocations()) {
+            if (character.getPosition().isWithinRange(trapPosition)) {
                 maze.activateTrap(trapPosition);
                 activatedTraps.add(trapPosition);
                 hud.loseLife(); //TODO replace this by the actual live loosing system
             }
         }
         // Cleanup
-        for(Position trapPosition : activatedTraps)
+        for (Position trapPosition : activatedTraps)
             maze.getTrapLocations().remove(trapPosition);
 
         // Handles Mobs
-        for(Mob mob : maze.getMobs())
-            if(character.getPosition().isWithinRange(mob.getPosition()) && mob.getLives() > 0) {
-                mob.setLives(0);
+        for (Mob mob : maze.getMobs())
+            if (character.getPosition().isWithinRange(mob.getPosition()) && (System.currentTimeMillis() - mob.getLastKill()) >= 3000) {
                 hud.loseLife(); //TODO replace this by the actual live loosing system
+                mob.setLastKill(System.currentTimeMillis());
             }
     }
 
     /**
      * Call the movement methods of the mobs
      */
-    public void moveMobs(){
-        for (Mob mob: maze.getMobs())
+    public void moveMobs() {
+        for (Mob mob : maze.getMobs())
             mob.moveMob(maze);
     }
 
