@@ -41,7 +41,7 @@ public class GameScreen implements Screen {
      *
      * @param game The main game class, used to access global resources and methods.
      */
-    public GameScreen(MazeRunnerGame game) {
+    public GameScreen(MazeRunnerGame game, String levelName) {
         this.game = game;
 
         // Create and configure the camera for the game view
@@ -59,7 +59,7 @@ public class GameScreen implements Screen {
 
         spriteBatch = game.getSpriteBatch();
         key = new Key();
-        maze = new Maze("level-1", key); // set level here for now
+        maze = new Maze(levelName, key); // set level here for now
         character = new Character(maze.getEntryLocation()); //TODO make this look nice at some point
         hud = new HUD(spriteBatch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), objects, 5);
     }
