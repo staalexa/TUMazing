@@ -6,8 +6,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import de.tum.cit.ase.maze.util.LivesManager;
 import de.tum.cit.ase.maze.util.TextureUtil;
+import de.tum.cit.ase.maze.entitity.Character;
 
 /**
  * Handles and displays the HUD
@@ -20,8 +20,8 @@ public class HUD {
 
     public HUD(SpriteBatch batch, int screenWidth, int screenHeight, Texture objects, int scale) {
         stage = new Stage(new FitViewport(screenWidth, screenHeight), batch);
-        lifeImages = new Image[LivesManager.getMaxLives()];
-        remainingLives = LivesManager.getMaxLives();
+        lifeImages = new Image[Character.getMaxLives()];
+        remainingLives = Character.getMaxLives();
 
         // Textures
         TextureRegion[][] textureRegions = TextureUtil.getTextures(objects);
@@ -29,7 +29,7 @@ public class HUD {
         TextureRegion keyTexture = textureRegions[4][1];
 
         // create the lives
-        for (int i = 0; i < LivesManager.getMaxLives(); i++) {
+        for (int i = 0; i < Character.getMaxLives(); i++) {
             lifeImages[i] = new Image(lifeTexture);
             lifeImages[i].setSize(lifeImages[i].getWidth() * scale, lifeImages[i].getHeight() * scale);
             lifeImages[i].setPosition(20 + i * (lifeImages[i].getWidth() + 10), screenHeight - lifeImages[i].getHeight() - 20);
@@ -50,14 +50,13 @@ public class HUD {
      * NOT SAFE! (security will be handled by Lives class)
      */
     public void loseLife() {
-        if (remainingLives > 0) {
-            remainingLives--;
-            lifeImages[remainingLives].setVisible(false);
-        }
+        if (remainingLives > 0)
+            lifeImages[--remainingLives].setVisible(false);
     }
 
     /**
      * Set the display value of the Key
+     *
      * @param hasKey
      */
     public void collectedKey(boolean hasKey) {

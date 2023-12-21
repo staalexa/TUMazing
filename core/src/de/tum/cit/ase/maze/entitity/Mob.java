@@ -2,6 +2,7 @@ package de.tum.cit.ase.maze.entitity;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import de.tum.cit.ase.maze.MazeRunnerGame;
 import de.tum.cit.ase.maze.map.Maze;
 import de.tum.cit.ase.maze.util.Direction;
 import de.tum.cit.ase.maze.util.Position;
@@ -14,8 +15,8 @@ import java.util.Random;
 public class Mob extends Entity {
     private long lastKill;
 
-    public Mob(Position position) {
-        super(position, 1, 1);
+    public Mob(Position position, MazeRunnerGame game) {
+        super(position, 1, 1, game, null);
         lastKill = 0;
     }
 

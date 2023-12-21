@@ -5,6 +5,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import de.tum.cit.ase.maze.MazeRunnerGame;
 import de.tum.cit.ase.maze.entitity.Mob;
 import de.tum.cit.ase.maze.util.Position;
 
@@ -22,13 +23,14 @@ public class Maze {
     private static int tileSize;
     private int width, height;
     private TextureRegion wallTexture, pathTexture, entryTexture, exitTexture, trapTexture,
-    keyTexture, enemyTexture;
+            keyTexture, enemyTexture;
     private Position entryLocation, keyLocation;
     private List<Position> trapLocations, exitLocations;
     private List<Mob> mobs;
     private Key key;
+    private MazeRunnerGame game;
 
-    public Maze(String levelName, Key key) {
+    public Maze(String levelName, Key key, MazeRunnerGame game) {
         this.key = key;
         width = 20;
         height = 20;
@@ -43,6 +45,7 @@ public class Maze {
             Arrays.fill(row, 9);
         loadMap(levelName);
         tileSize = 16;
+        this.game = game;
     }
 
     /**
@@ -90,7 +93,7 @@ public class Maze {
                     case 1 -> entryLocation = new Position(x, y, true);
                     case 2 -> exitLocations.add(new Position(x, y, true));
                     case 3 -> trapLocations.add(new Position(x, y, true));
-                    case 4 -> mobs.add(new Mob(new Position(x, y, true)));
+                    case 4 -> mobs.add(new Mob(new Position(x, y, true), game));
                     case 5 -> key.setPosition(new Position(x, y, true)); // set the key position
                 }
             }
@@ -144,6 +147,7 @@ public class Maze {
 
     /**
      * Removes the key from given position
+     *
      * @param position The key's position
      */
     public void removeKey(Position position) {
@@ -152,6 +156,7 @@ public class Maze {
 
     /**
      * Removes a trap from the map
+     *
      * @param position Position of the Trap
      */
     public void activateTrap(Position position) {
@@ -205,13 +210,14 @@ public class Maze {
         // check for out of bounds
         if (x < 0 || y < 0 || y >= mapData.length || x >= mapData[0].length) return true;
 
-        if(isNotValidExit(x, y)) return true;
+        if (isNotValidExit(x, y)) return true;
         // check for wall
         return mapData[x][y] == 0;
     }
 
     /**
      * Helper method
+     *
      * @param x Position x (not scaled)
      * @param y Position y (not scaled)
      * @return returns true if player has not picked up the key, and wants to go on an exit
@@ -239,6 +245,7 @@ public class Maze {
     public List<Mob> getMobs() {
         return mobs;
     }
+
     public void removeMob(Mob mob) {
         mobs.remove(mob);
     }

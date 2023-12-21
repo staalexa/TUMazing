@@ -3,6 +3,7 @@ package de.tum.cit.ase.maze.entitity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import de.tum.cit.ase.maze.MazeRunnerGame;
+import de.tum.cit.ase.maze.hud.HUD;
 import de.tum.cit.ase.maze.map.Maze;
 import de.tum.cit.ase.maze.util.Direction;
 import de.tum.cit.ase.maze.util.Position;
@@ -13,10 +14,11 @@ import java.util.function.BiConsumer;
  * This Class makes a Character move and counts the lives and all the character statuses
  */
 public class Character extends Entity {
+    private static final int MAX_LIVES = 3;
     private boolean hasKey;
 
-    public Character(Position position) {
-        super(position, 3, 1);
+    public Character(Position position, MazeRunnerGame game, HUD hud) {
+        super(position, MAX_LIVES, 1, game, hud);
         hasKey = false;
     }
 
@@ -53,5 +55,9 @@ public class Character extends Entity {
 
     public void setHasKey(boolean hasKey) {
         this.hasKey = hasKey;
+    }
+
+    public static int getMaxLives() {
+        return MAX_LIVES;
     }
 }

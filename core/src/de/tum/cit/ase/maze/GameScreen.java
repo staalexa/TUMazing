@@ -59,9 +59,9 @@ public class GameScreen implements Screen {
 
         spriteBatch = game.getSpriteBatch();
         key = new Key();
-        maze = new Maze(levelName, key); // set level here for now
-        character = new Character(maze.getEntryLocation()); //TODO make this look nice at some point
+        maze = new Maze(levelName, key, game); // set level here for now
         hud = new HUD(spriteBatch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), objects, 5);
+        character = new Character(maze.getEntryLocation(), game, hud); //TODO make this look nice at some point
     }
 
     // Screen interface methods with necessary functionality
@@ -155,7 +155,7 @@ public class GameScreen implements Screen {
             if (character.getPosition().isWithinRange(trapPosition)) {
                 maze.activateTrap(trapPosition);
                 activatedTraps.add(trapPosition);
-                hud.loseLife(); //TODO replace this by the actual live loosing system
+                character.looseLife();
             }
         }
         // Cleanup
@@ -165,11 +165,11 @@ public class GameScreen implements Screen {
         // Handles Mobs
         for (Mob mob : maze.getMobs())
             if (character.getPosition().isWithinRange(mob.getPosition()) && (System.currentTimeMillis() - mob.getLastKill()) >= 3000) {
-                hud.loseLife(); //TODO replace this by the actual live loosing system
+                character.looseLife();
                 mob.setLastKill(System.currentTimeMillis());
             }
         //Handles Exit
-        for(Position exit : maze.getExitLocations()) {
+        for (Position exit : maze.getExitLocations()) {
             if (character.getPosition().isWithinRange(exit))
                 game.goToEnd();
         }
