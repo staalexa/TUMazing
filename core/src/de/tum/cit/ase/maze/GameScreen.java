@@ -168,6 +168,11 @@ public class GameScreen implements Screen {
                 hud.loseLife(); //TODO replace this by the actual live loosing system
                 mob.setLastKill(System.currentTimeMillis());
             }
+        //Handles Exit
+        for(Position exit : maze.getExitLocations()) {
+            if (character.getPosition().isWithinRange(exit))
+                game.goToMenu(); //TODO add new screen after passing level
+        }
     }
 
     /**
