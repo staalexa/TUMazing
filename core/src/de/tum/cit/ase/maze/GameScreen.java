@@ -155,7 +155,7 @@ public class GameScreen implements Screen {
             if (character.getPosition().isWithinRange(trapPosition)) {
                 maze.activateTrap(trapPosition);
                 activatedTraps.add(trapPosition);
-                hud.loseLife(); //TODO replace this by the actual live loosing system
+                character.looseLife();
             }
         }
         // Cleanup
@@ -165,11 +165,11 @@ public class GameScreen implements Screen {
         // Handles Mobs
         for (Mob mob : maze.getMobs())
             if (character.getPosition().isWithinRange(mob.getPosition()) && (System.currentTimeMillis() - mob.getLastKill()) >= 3000) {
-                hud.loseLife(); //TODO replace this by the actual live loosing system
+                character.looseLife();
                 mob.setLastKill(System.currentTimeMillis());
             }
         //Handles Exit
-        for(Position exit : maze.getExitLocations()) {
+        for (Position exit : maze.getExitLocations()) {
             if (character.getPosition().isWithinRange(exit))
                 game.goToEnd();
         }
