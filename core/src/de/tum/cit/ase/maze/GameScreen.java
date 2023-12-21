@@ -41,7 +41,7 @@ public class GameScreen implements Screen {
      *
      * @param game The main game class, used to access global resources and methods.
      */
-    public GameScreen(MazeRunnerGame game) {
+    public GameScreen(MazeRunnerGame game, String levelName) {
         this.game = game;
 
         // Create and configure the camera for the game view
@@ -59,7 +59,7 @@ public class GameScreen implements Screen {
 
         spriteBatch = game.getSpriteBatch();
         key = new Key();
-        maze = new Maze("level-1", key, game); // set level here for now
+        maze = new Maze(levelName, key, game); // set level here for now
         hud = new HUD(spriteBatch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), objects, 5);
         character = new Character(maze.getEntryLocation(), game, hud); //TODO make this look nice at some point
     }
@@ -155,7 +155,7 @@ public class GameScreen implements Screen {
             if (character.getPosition().isWithinRange(trapPosition)) {
                 maze.activateTrap(trapPosition);
                 activatedTraps.add(trapPosition);
-                character.looseLife();
+                hud.loseLife(); //TODO replace this by the actual live loosing system
             }
         }
         // Cleanup
@@ -165,12 +165,11 @@ public class GameScreen implements Screen {
         // Handles Mobs
         for (Mob mob : maze.getMobs())
             if (character.getPosition().isWithinRange(mob.getPosition()) && (System.currentTimeMillis() - mob.getLastKill()) >= 3000) {
-                character.looseLife();
+                hud.loseLife(); //TODO replace this by the actual live loosing system
                 mob.setLastKill(System.currentTimeMillis());
             }
-
         //Handles Exit
-        for (Position exit : maze.getExitLocations()) {
+        for(Position exit : maze.getExitLocations()) {
             if (character.getPosition().isWithinRange(exit))
                 game.goToEnd();
         }
