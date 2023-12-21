@@ -8,6 +8,7 @@ import de.tum.cit.ase.maze.util.Position;
  */
 public class Key {
     private Position position;
+    private boolean pickedUp;
 
     /**
      * Set the keys position. Only used during game loading
@@ -15,7 +16,7 @@ public class Key {
      */
     public void setPosition(Position position) {
         this.position = position;
-        System.out.println("KEY POS: " + position.getX() + " " + position.getY());
+        pickedUp = false;
     }
 
     //TODO check why this does not work from game.getGameScreen
@@ -30,10 +31,15 @@ public class Key {
         screen.getHud().collectedKey(true);
         screen.getCharacter().setHasKey(true);
         screen.getMaze().removeKey(position);
+        pickedUp = true;
         return true;
     }
 
     public Position getPosition() {
         return position;
+    }
+
+    public boolean isPickedUp() {
+        return pickedUp;
     }
 }
