@@ -39,19 +39,16 @@ public abstract class Entity {
 
     /**
      * Loose a life of the player
-     */
-    public void looseLife() {
+     * @return      true if the person is still alive after, false if not
+     * */
+    public boolean looseLife() {
         lives--;
         hud.loseLife();
         if (checkIfDead()) {
-            Sound sound = Gdx.audio.newSound(Gdx.files.internal("assets/sounds/game-over.wav"));
-            sound.play(1f);
             game.goToEnd(EndingState.NoMoreLives);
+            return false;
         }
-        else {
-            Sound sound = Gdx.audio.newSound(Gdx.files.internal("assets/sounds/life-lost.wav"));
-            sound.play(1f);
-        }
+         else    return true;
     }
 
     /**
