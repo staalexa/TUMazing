@@ -3,6 +3,7 @@ package de.tum.cit.ase.maze;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -147,8 +148,11 @@ public class GameScreen implements Screen {
      */
     public void checkEnvironment() {
         // Handles Key
-        if (character.getPosition().isWithinRange(key.getPosition()))
+        if (character.getPosition().isWithinRange(key.getPosition())) {
             key.pickUp(this);
+            Sound sound = Gdx.audio.newSound(Gdx.files.internal("assets/sounds/collect-key.mp3"));
+            sound.play(1f);
+        }
 
         // Handles Traps
         List<Position> activatedTraps = new ArrayList<>();
@@ -171,8 +175,11 @@ public class GameScreen implements Screen {
             }
         //Handles Exit
         for (Position exit : maze.getExitLocations()) {
-            if (character.getPosition().isWithinRange(exit))
+            if (character.getPosition().isWithinRange(exit)) {
+                Sound sound = Gdx.audio.newSound(Gdx.files.internal("assets/sounds/victory.mp3"));
+                sound.play(1f);
                 game.goToEnd(EndingState.Victory);
+            }
         }
     }
 

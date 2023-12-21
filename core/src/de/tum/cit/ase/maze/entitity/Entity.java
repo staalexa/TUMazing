@@ -1,5 +1,7 @@
 package de.tum.cit.ase.maze.entitity;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import de.tum.cit.ase.maze.MazeRunnerGame;
 import de.tum.cit.ase.maze.hud.HUD;
 import de.tum.cit.ase.maze.map.Maze;
@@ -41,7 +43,15 @@ public abstract class Entity {
     public void looseLife() {
         lives--;
         hud.loseLife();
-        if (checkIfDead()) game.goToEnd(EndingState.NoMoreLives);
+        if (checkIfDead()) {
+            Sound sound = Gdx.audio.newSound(Gdx.files.internal("assets/sounds/game-over.wav"));
+            sound.play(1f);
+            game.goToEnd(EndingState.NoMoreLives);
+        }
+        else {
+            Sound sound = Gdx.audio.newSound(Gdx.files.internal("assets/sounds/life-lost.wav"));
+            sound.play(1f);
+        }
     }
 
     /**
