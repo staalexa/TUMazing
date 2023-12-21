@@ -4,6 +4,7 @@ import de.tum.cit.ase.maze.MazeRunnerGame;
 import de.tum.cit.ase.maze.hud.HUD;
 import de.tum.cit.ase.maze.map.Maze;
 import de.tum.cit.ase.maze.util.Direction;
+import de.tum.cit.ase.maze.util.EndingState;
 import de.tum.cit.ase.maze.util.Position;
 
 /**
@@ -40,7 +41,7 @@ public abstract class Entity {
     public void looseLife() {
         lives--;
         hud.loseLife();
-        if (checkIfDead()) game.goToMenu(); //TODO: call the end of the game
+        if (checkIfDead()) game.goToEnd(EndingState.NoMoreLives);
     }
 
     /**
