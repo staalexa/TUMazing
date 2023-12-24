@@ -3,6 +3,7 @@ package de.tum.cit.ase.maze;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -36,6 +37,7 @@ public class GameScreen implements Screen {
     private Character character;
     private HUD hud;
     private Key key;
+    private Sound gameOverSound, lifeLostSound, collectKeySound, victorySound;
 
     /**
      * Constructor for GameScreen. Sets up the camera and font.
@@ -63,6 +65,12 @@ public class GameScreen implements Screen {
         maze = new Maze(levelName, key, game); // set level here for now
         hud = new HUD(spriteBatch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), objects, 5);
         character = new Character(maze.getEntryLocation(), game, hud); //TODO make this look nice at some point
+
+        //Get sounds
+        gameOverSound = Gdx.audio.newSound(Gdx.files.internal("assets/sounds/game-over.wav"));
+        lifeLostSound = Gdx.audio.newSound(Gdx.files.internal("assets/sounds/life-lost.wav"));
+        collectKeySound = Gdx.audio.newSound(Gdx.files.internal("assets/sounds/collect-key.mp3"));
+        victorySound = Gdx.audio.newSound(Gdx.files.internal("assets/sounds/victory.mp3"));
     }
 
     // Screen interface methods with necessary functionality
@@ -114,6 +122,10 @@ public class GameScreen implements Screen {
         tiles.dispose();
         objects.dispose();
         mobs.dispose();
+        gameOverSound.dispose();
+        lifeLostSound.dispose();
+        collectKeySound.dispose();
+        victorySound.dispose();
     }
 
     // Additional methods and logic can be added as needed for the game screen
@@ -147,8 +159,10 @@ public class GameScreen implements Screen {
      */
     public void checkEnvironment() {
         // Handles Key
-        if (character.getPosition().isWithinRange(key.getPosition()))
+        if (character.getPosition().isWithinRange(key.getPosition())) {
             key.pickUp(this);
+            collectKeySound.play(1f);
+        }
 
         // Handles Traps
         List<Position> activatedTraps = new ArrayList<>();
@@ -156,7 +170,8 @@ public class GameScreen implements Screen {
             if (character.getPosition().isWithinRange(trapPosition)) {
                 maze.activateTrap(trapPosition);
                 activatedTraps.add(trapPosition);
-                character.looseLife();
+                if (character.looseLife()) lifeLostSound.play();
+                else gameOverSound.play();
             }
         }
         // Cleanup
@@ -166,13 +181,16 @@ public class GameScreen implements Screen {
         // Handles Mobs
         for (Mob mob : maze.getMobs())
             if (character.getPosition().isWithinRange(mob.getPosition()) && (System.currentTimeMillis() - mob.getLastKill()) >= 3000) {
-                character.looseLife();
+                if (character.looseLife()) lifeLostSound.play();
+                else gameOverSound.play();
                 mob.setLastKill(System.currentTimeMillis());
             }
         //Handles Exit
         for (Position exit : maze.getExitLocations()) {
-            if (character.getPosition().isWithinRange(exit))
+            if (character.getPosition().isWithinRange(exit)) {
+                victorySound.play(1f);
                 game.goToEnd(EndingState.Victory);
+            }
         }
     }
 
