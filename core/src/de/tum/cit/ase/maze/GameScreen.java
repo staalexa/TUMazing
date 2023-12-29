@@ -13,6 +13,7 @@ import de.tum.cit.ase.maze.entitity.Mob;
 import de.tum.cit.ase.maze.hud.HUD;
 import de.tum.cit.ase.maze.map.Maze;
 import de.tum.cit.ase.maze.map.Key;
+import de.tum.cit.ase.maze.menu.PauseScreen;
 import de.tum.cit.ase.maze.util.GameState;
 import de.tum.cit.ase.maze.util.Position;
 
@@ -31,14 +32,14 @@ public class GameScreen implements Screen {
     private final BitmapFont font;
     private float sinusInput = 0f;
     private final SpriteBatch spriteBatch;
-    private Maze maze;
-    private Texture tiles, objects, mobs;
-    private Character character;
-    private HUD hud;
-    private Key key;
+    private final Maze maze;
+    private final Texture tiles, objects, mobs;
+    private final Character character;
+    private final HUD hud;
+    private final Key key;
     private GameState gameState;
 
-    private PauseScreen pauseScreen;
+    private final PauseScreen pauseScreen;
 
     /**
      * Constructor for GameScreen. Sets up the camera and font.
@@ -207,5 +208,9 @@ public class GameScreen implements Screen {
 
     public Character getCharacter() {
         return character;
+    }
+
+    public GameState getGameState() {
+        return gameState;
     }
 }
