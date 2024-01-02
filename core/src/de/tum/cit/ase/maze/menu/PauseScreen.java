@@ -1,4 +1,4 @@
-package de.tum.cit.ase.maze;
+package de.tum.cit.ase.maze.menu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -12,19 +12,20 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import de.tum.cit.ase.maze.util.EndingState;
+import de.tum.cit.ase.maze.MazeRunnerGame;
 
 /**
- * The EndScreen is responsible for the final stage of the game. It is shown after a game is over
+ * The PauseScreen is responsible for the pause of the game.
  */
-public class EndScreen implements Screen {
+public class PauseScreen implements Screen {
     private final Stage stage;
 
     /**
-     * Constructor of the class, creates a table to show elements
+     * Constructor of the class, creates two buttons to go to the menu and resume the game
+     *
      * @param game MazeRunnerGame
      */
-    public EndScreen(MazeRunnerGame game, EndingState endingState) {
+    public PauseScreen(MazeRunnerGame game) {
         var camera = new OrthographicCamera();
         camera.zoom = 1.5f;
         Viewport viewport = new ScreenViewport(camera);
@@ -34,17 +35,32 @@ public class EndScreen implements Screen {
         table.setFillParent(true);
         stage.addActor(table);
 
-        switch (endingState) {
-            case Victory -> table.add(new Label("Level passed", game.getSkin(), "title")).padBottom(80).row();
-            case NoMoreLives -> table.add(new Label("You died", game.getSkin(), "title")).padBottom(80).row();
-        }
+        table.add(new Label("Game paused", game.getSkin(), "title")).padBottom(80).row();
 
-        TextButton goToMenuButton = new TextButton("go to menu", game.getSkin());
-        table.add(goToMenuButton).width(300).row();
+        TextButton resumeGameButton = new TextButton("resume game", game.getSkin());
+        table.add(resumeGameButton).width(300).padBottom(30).row();
+        resumeGameButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.resumeGame(); // Change to the game screen when button is pressed
+            }
+        });
+
+        TextButton goToMenuButton = new TextButton("exit game", game.getSkin());
+        table.add(goToMenuButton).width(300).padBottom(30).row();
         goToMenuButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.goToMenu(); // Change to the game screen when button is pressed
+                game.goToMenu(); // Change to the menu screen when button is pressed
+            }
+        });
+
+        TextButton goToLevelButton = new TextButton("change level", game.getSkin());
+        table.add(goToLevelButton).width(300).padBottom(30).row();
+        goToLevelButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.goToLevel(); // Change to the level screen when button is pressed
             }
         });
     }

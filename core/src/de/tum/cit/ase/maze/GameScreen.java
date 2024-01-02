@@ -3,7 +3,6 @@ package de.tum.cit.ase.maze;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -14,7 +13,8 @@ import de.tum.cit.ase.maze.entitity.Mob;
 import de.tum.cit.ase.maze.hud.HUD;
 import de.tum.cit.ase.maze.map.Maze;
 import de.tum.cit.ase.maze.map.Key;
-import de.tum.cit.ase.maze.util.EndingState;
+import de.tum.cit.ase.maze.menu.PauseScreen;
+import de.tum.cit.ase.maze.util.GameState;
 import de.tum.cit.ase.maze.util.Position;
 
 import java.util.ArrayList;
@@ -29,15 +29,13 @@ public class GameScreen implements Screen {
 
     private final MazeRunnerGame game;
     private final OrthographicCamera camera;
-    private final BitmapFont font;
     private float sinusInput = 0f;
     private final SpriteBatch spriteBatch;
-    private Maze maze;
-    private Texture tiles, objects, mobs;
-    private Character character;
-    private HUD hud;
-    private Key key;
-    private Sound gameOverSound, lifeLostSound, collectKeySound, victorySound;
+    private final Maze maze;
+    private final Texture tiles, objects, mobs;
+    private final Character character;
+    private final HUD hud;
+    private final Key key;
 
     /**
      * Constructor for GameScreen. Sets up the camera and font.
@@ -52,9 +50,6 @@ public class GameScreen implements Screen {
         camera.setToOrtho(false);
         camera.zoom = 0.15f;
 
-        // Get the font from the game's skin
-        font = game.getSkin().getFont("font");
-
         //Get textures
         tiles = new Texture(Gdx.files.internal("assets/basictiles.png"));
         objects = new Texture(Gdx.files.internal("assets/objects.png"));
@@ -65,19 +60,13 @@ public class GameScreen implements Screen {
         maze = new Maze(levelName, key, game); // set level here for now
         hud = new HUD(spriteBatch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), objects, 5);
         character = new Character(maze.getEntryLocation(), game, hud); //TODO make this look nice at some point
-
-        //Get sounds
-        gameOverSound = Gdx.audio.newSound(Gdx.files.internal("assets/sounds/game-over.wav"));
-        lifeLostSound = Gdx.audio.newSound(Gdx.files.internal("assets/sounds/life-lost.wav"));
-        collectKeySound = Gdx.audio.newSound(Gdx.files.internal("assets/sounds/collect-key.mp3"));
-        victorySound = Gdx.audio.newSound(Gdx.files.internal("assets/sounds/victory.mp3"));
     }
 
     // Screen interface methods with necessary functionality
     @Override
     public void render(float delta) {
-        // Check for escape key press to go back to the menu
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) game.goToMenu();
+        // Check for escape key press to go to the pause screen
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) pause();
 
         ScreenUtils.clear(0, 0, 0, 1); // Clear the screen
 
@@ -102,10 +91,12 @@ public class GameScreen implements Screen {
 
     @Override
     public void pause() {
+        game.pause();
     }
 
     @Override
     public void resume() {
+        game.resume();
     }
 
     @Override
@@ -122,10 +113,6 @@ public class GameScreen implements Screen {
         tiles.dispose();
         objects.dispose();
         mobs.dispose();
-        gameOverSound.dispose();
-        lifeLostSound.dispose();
-        collectKeySound.dispose();
-        victorySound.dispose();
     }
 
     // Additional methods and logic can be added as needed for the game screen
@@ -159,10 +146,8 @@ public class GameScreen implements Screen {
      */
     public void checkEnvironment() {
         // Handles Key
-        if (character.getPosition().isWithinRange(key.getPosition())) {
+        if (character.getPosition().isWithinRange(key.getPosition()))
             key.pickUp(this);
-            collectKeySound.play(1f);
-        }
 
         // Handles Traps
         List<Position> activatedTraps = new ArrayList<>();
@@ -170,8 +155,7 @@ public class GameScreen implements Screen {
             if (character.getPosition().isWithinRange(trapPosition)) {
                 maze.activateTrap(trapPosition);
                 activatedTraps.add(trapPosition);
-                if (character.looseLife()) lifeLostSound.play();
-                else gameOverSound.play();
+                character.looseLife();
             }
         }
         // Cleanup
@@ -181,16 +165,13 @@ public class GameScreen implements Screen {
         // Handles Mobs
         for (Mob mob : maze.getMobs())
             if (character.getPosition().isWithinRange(mob.getPosition()) && (System.currentTimeMillis() - mob.getLastKill()) >= 3000) {
-                if (character.looseLife()) lifeLostSound.play();
-                else gameOverSound.play();
+                character.looseLife();
                 mob.setLastKill(System.currentTimeMillis());
             }
         //Handles Exit
         for (Position exit : maze.getExitLocations()) {
-            if (character.getPosition().isWithinRange(exit)) {
-                victorySound.play(1f);
-                game.goToEnd(EndingState.Victory);
-            }
+            if (character.getPosition().isWithinRange(exit))
+                game.goToEnd(GameState.VICTORY);
         }
     }
 

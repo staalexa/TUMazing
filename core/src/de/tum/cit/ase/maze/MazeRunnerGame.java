@@ -9,7 +9,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
-import de.tum.cit.ase.maze.util.EndingState;
+import de.tum.cit.ase.maze.menu.EndScreen;
+import de.tum.cit.ase.maze.menu.LevelSelectScreen;
+import de.tum.cit.ase.maze.menu.MenuScreen;
+import de.tum.cit.ase.maze.menu.PauseScreen;
+import de.tum.cit.ase.maze.util.GameState;
 import games.spooky.gdx.nativefilechooser.NativeFileChooser;
 
 /**
@@ -20,6 +24,7 @@ public class MazeRunnerGame extends Game {
     // Screens
     private MenuScreen menuScreen;
     private GameScreen gameScreen;
+    private PauseScreen pauseScreen;
 
     // Sprite Batch for rendering
     private SpriteBatch spriteBatch;
@@ -61,7 +66,8 @@ public class MazeRunnerGame extends Game {
      * Switches to the menu screen.
      */
     public void goToMenu() {
-        this.setScreen(new MenuScreen(this)); // Set the current screen to MenuScreen
+        menuScreen = new MenuScreen(this);
+        this.setScreen(menuScreen); // Set the current screen to MenuScreen
         if (gameScreen != null) {
             gameScreen.dispose(); // Dispose the game screen if it exists
             gameScreen = null;
@@ -72,7 +78,8 @@ public class MazeRunnerGame extends Game {
      * Switches to the game screen.
      */
     public void goToGame(String levelName) {
-        this.setScreen(new GameScreen(this, levelName)); // Set the current screen to GameScreen
+        gameScreen = new GameScreen(this, levelName);
+        this.setScreen(gameScreen); // Set the current screen to GameScreen
         if (menuScreen != null) {
             menuScreen.dispose(); // Dispose the menu screen if it exists
             menuScreen = null;
@@ -82,7 +89,7 @@ public class MazeRunnerGame extends Game {
     /**
      * Switches to the end screen
      */
-    public void goToEnd(EndingState endingState) {
+    public void goToEnd(GameState endingState) {
         this.setScreen(new EndScreen(this, endingState));
         if (gameScreen != null) {
             gameScreen.dispose();
@@ -90,11 +97,25 @@ public class MazeRunnerGame extends Game {
         }
     }
 
+    public void pause() {
+        pauseScreen = new PauseScreen(this);
+        this.setScreen(pauseScreen);
+    }
+
+    public void resume() {
+        this.setScreen(gameScreen);
+        pauseScreen.dispose();
+    }
+
     public void goToLevel() {
         this.setScreen(new LevelSelectScreen(this));
         if (menuScreen != null) {
             menuScreen.dispose();
             menuScreen = null;
+        }
+        if(gameScreen != null) {
+            gameScreen.dispose();
+            gameScreen = null;
         }
     }
 
@@ -128,6 +149,13 @@ public class MazeRunnerGame extends Game {
         getScreen().dispose(); // Dispose the current screen
         spriteBatch.dispose(); // Dispose the spriteBatch
         skin.dispose(); // Dispose the skin
+    }
+
+    /**
+     * Resumes the game
+     */
+    public void resumeGame() {
+        gameScreen.resume();
     }
 
     // Getter methods
