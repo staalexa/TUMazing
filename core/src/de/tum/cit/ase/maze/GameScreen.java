@@ -29,7 +29,6 @@ public class GameScreen implements Screen {
 
     private final MazeRunnerGame game;
     private final OrthographicCamera camera;
-    private final BitmapFont font;
     private float sinusInput = 0f;
     private final SpriteBatch spriteBatch;
     private final Maze maze;
@@ -37,9 +36,6 @@ public class GameScreen implements Screen {
     private final Character character;
     private final HUD hud;
     private final Key key;
-    private GameState gameState;
-
-    private final PauseScreen pauseScreen;
 
     /**
      * Constructor for GameScreen. Sets up the camera and font.
@@ -48,15 +44,11 @@ public class GameScreen implements Screen {
      */
     public GameScreen(MazeRunnerGame game, String levelName) {
         this.game = game;
-        gameState = GameState.ACTIVE;
 
         // Create and configure the camera for the game view
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
         camera.zoom = 0.15f;
-
-        // Get the font from the game's skin
-        font = game.getSkin().getFont("font");
 
         //Get textures
         tiles = new Texture(Gdx.files.internal("assets/basictiles.png"));
@@ -68,34 +60,28 @@ public class GameScreen implements Screen {
         maze = new Maze(levelName, key, game); // set level here for now
         hud = new HUD(spriteBatch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), objects, 5);
         character = new Character(maze.getEntryLocation(), game, hud); //TODO make this look nice at some point
-
-        pauseScreen = new PauseScreen(game);
     }
 
     // Screen interface methods with necessary functionality
     @Override
     public void render(float delta) {
-        if (gameState == GameState.PAUSED) {
-            pauseScreen.render(delta);
-        } else {
-            // Check for escape key press to go to the pause screen
-            if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) pause();
+        // Check for escape key press to go to the pause screen
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) pause();
 
-            ScreenUtils.clear(0, 0, 0, 1); // Clear the screen
+        ScreenUtils.clear(0, 0, 0, 1); // Clear the screen
 
-            camera.update(); // Update the camera
+        camera.update(); // Update the camera
 
-            sinusInput += delta;
+        sinusInput += delta;
 
-            renderMaze();
-            drawSomething(character.drawCharacter, sinusInput);
+        renderMaze();
+        drawSomething(character.drawCharacter, sinusInput);
 
-            character.moveCharacter(maze);
-            camera.position.set(character.getPosition().getX(), character.getPosition().getY(), 0);
-            hud.draw();
-            checkEnvironment();
-            moveMobs();
-        }
+        character.moveCharacter(maze);
+        camera.position.set(character.getPosition().getX(), character.getPosition().getY(), 0);
+        hud.draw();
+        checkEnvironment();
+        moveMobs();
     }
 
     @Override
@@ -105,12 +91,12 @@ public class GameScreen implements Screen {
 
     @Override
     public void pause() {
-        gameState = GameState.PAUSED;
+        game.pause();
     }
 
     @Override
     public void resume() {
-        gameState = GameState.ACTIVE;
+        game.resume();
     }
 
     @Override
@@ -208,9 +194,5 @@ public class GameScreen implements Screen {
 
     public Character getCharacter() {
         return character;
-    }
-
-    public GameState getGameState() {
-        return gameState;
     }
 }

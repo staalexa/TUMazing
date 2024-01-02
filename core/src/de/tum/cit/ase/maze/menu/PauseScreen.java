@@ -22,6 +22,7 @@ public class PauseScreen implements Screen {
 
     /**
      * Constructor of the class, creates two buttons to go to the menu and resume the game
+     *
      * @param game MazeRunnerGame
      */
     public PauseScreen(MazeRunnerGame game) {
