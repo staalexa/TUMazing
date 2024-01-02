@@ -37,7 +37,16 @@ public class PauseScreen implements Screen {
 
         table.add(new Label("Game paused", game.getSkin(), "title")).padBottom(80).row();
 
-        TextButton goToMenuButton = new TextButton("go to menu", game.getSkin());
+        TextButton resumeGameButton = new TextButton("resume game", game.getSkin());
+        table.add(resumeGameButton).width(300).padBottom(30).row();
+        resumeGameButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.resumeGame(); // Change to the game screen when button is pressed
+            }
+        });
+
+        TextButton goToMenuButton = new TextButton("exit game", game.getSkin());
         table.add(goToMenuButton).width(300).padBottom(30).row();
         goToMenuButton.addListener(new ChangeListener() {
             @Override
@@ -46,13 +55,12 @@ public class PauseScreen implements Screen {
             }
         });
 
-
-        TextButton resumeGameButton = new TextButton("resume game", game.getSkin());
-        table.add(resumeGameButton).width(300).row();
-        resumeGameButton.addListener(new ChangeListener() {
+        TextButton goToLevelButton = new TextButton("change level", game.getSkin());
+        table.add(goToLevelButton).width(300).padBottom(30).row();
+        goToLevelButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.resumeGame(); // Change to the game screen when button is pressed
+                game.goToLevel(); // Change to the level screen when button is pressed
             }
         });
     }

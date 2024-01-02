@@ -113,6 +113,10 @@ public class MazeRunnerGame extends Game {
             menuScreen.dispose();
             menuScreen = null;
         }
+        if(gameScreen != null) {
+            gameScreen.dispose();
+            gameScreen = null;
+        }
     }
 
     /**
