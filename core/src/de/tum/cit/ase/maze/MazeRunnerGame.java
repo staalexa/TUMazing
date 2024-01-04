@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
+import de.tum.cit.ase.maze.exception.MapFormatWrongException;
 import de.tum.cit.ase.maze.util.EndingState;
 import games.spooky.gdx.nativefilechooser.NativeFileChooser;
 
@@ -72,7 +73,13 @@ public class MazeRunnerGame extends Game {
      * Switches to the game screen.
      */
     public void goToGame(String levelName) {
-        this.setScreen(new GameScreen(this, levelName)); // Set the current screen to GameScreen
+        // Try catch to check the map format and stop the maze from loading if the map file is wrong
+        try {
+            this.setScreen(new GameScreen(this, levelName)); // Set the current screen to GameScreen
+        } catch (MapFormatWrongException e) {
+            goToLevel(); //TODO display the message for the user on screen.
+        }
+
         if (menuScreen != null) {
             menuScreen.dispose(); // Dispose the menu screen if it exists
             menuScreen = null;

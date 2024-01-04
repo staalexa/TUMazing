@@ -87,6 +87,7 @@ public class LevelSelectScreen implements Screen {
 
             // Iterate through the files and print their names
             for (FileHandle file : files) {
+                if (!file.extension().equals("properties")) continue; // prevents files that are wrong format to show
                 final String levelName = file.nameWithoutExtension(); // Get file name without extension
                 TextButton button = new TextButton(levelName, game.getSkin());
                 table.add(button).width(300).padBottom(30).row();

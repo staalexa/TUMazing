@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import de.tum.cit.ase.maze.entitity.Character;
 import de.tum.cit.ase.maze.entitity.Mob;
+import de.tum.cit.ase.maze.exception.MapFormatWrongException;
 import de.tum.cit.ase.maze.hud.HUD;
 import de.tum.cit.ase.maze.map.Maze;
 import de.tum.cit.ase.maze.map.Key;
@@ -44,7 +45,7 @@ public class GameScreen implements Screen {
      *
      * @param game The main game class, used to access global resources and methods.
      */
-    public GameScreen(MazeRunnerGame game, String levelName) {
+    public GameScreen(MazeRunnerGame game, String levelName) throws MapFormatWrongException {
         this.game = game;
 
         // Create and configure the camera for the game view
@@ -62,9 +63,13 @@ public class GameScreen implements Screen {
 
         spriteBatch = game.getSpriteBatch();
         key = new Key();
-        maze = new Maze(levelName, key, game); // set level here for now
+        maze = new Maze(levelName, key, game);
         hud = new HUD(spriteBatch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), objects, 5);
-        character = new Character(maze.getEntryLocation(), game, hud); //TODO make this look nice at some point
+
+        //check if the map is valid
+        if(!maze.checkValid()) throw new MapFormatWrongException();
+
+        character = new Character(maze.getEntryLocation(), game, hud);
 
         //Get sounds
         gameOverSound = Gdx.audio.newSound(Gdx.files.internal("assets/sounds/game-over.wav"));
@@ -136,7 +141,6 @@ public class GameScreen implements Screen {
     private void renderMaze() {
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
-
         maze.drawMaze(spriteBatch, tiles, objects, mobs);
         spriteBatch.end();
     }
