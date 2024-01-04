@@ -33,12 +33,11 @@ public class GameScreen implements Screen {
     private final BitmapFont font;
     private float sinusInput = 0f;
     private final SpriteBatch spriteBatch;
-    private Maze maze;
-    private Texture tiles, objects, mobs;
-    private Character character;
-    private HUD hud;
-    private Key key;
-    private Sound gameOverSound, lifeLostSound, collectKeySound, victorySound;
+    private final Maze maze;
+    private final Texture tiles, objects, mobs;
+    private final Character character;
+    private final HUD hud;
+    private final Key key;
 
     /**
      * Constructor for GameScreen. Sets up the camera and font.
@@ -63,7 +62,7 @@ public class GameScreen implements Screen {
 
         spriteBatch = game.getSpriteBatch();
         key = new Key();
-        maze = new Maze(levelName, key, game);
+        maze = new Maze(levelName, key, game); // set level here for now
         hud = new HUD(spriteBatch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), objects, 5);
 
         //check if the map is valid
@@ -107,10 +106,12 @@ public class GameScreen implements Screen {
 
     @Override
     public void pause() {
+        game.pause();
     }
 
     @Override
     public void resume() {
+        game.resume();
     }
 
     @Override

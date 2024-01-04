@@ -1,12 +1,10 @@
 package de.tum.cit.ase.maze.entitity;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import de.tum.cit.ase.maze.MazeRunnerGame;
 import de.tum.cit.ase.maze.hud.HUD;
 import de.tum.cit.ase.maze.map.Maze;
 import de.tum.cit.ase.maze.util.Direction;
-import de.tum.cit.ase.maze.util.EndingState;
+import de.tum.cit.ase.maze.util.GameState;
 import de.tum.cit.ase.maze.util.Position;
 
 /**
@@ -39,16 +37,11 @@ public abstract class Entity {
 
     /**
      * Loose a life of the player
-     * @return      true if the person is still alive after, false if not
-     * */
-    public boolean looseLife() {
+     */
+    public void looseLife() {
         lives--;
         hud.loseLife();
-        if (checkIfDead()) {
-            game.goToEnd(EndingState.NoMoreLives);
-            return false;
-        }
-         else    return true;
+        if (checkIfDead()) game.goToEnd(GameState.DEATH);
     }
 
     /**
