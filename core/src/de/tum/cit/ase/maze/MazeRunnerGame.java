@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
+import de.tum.cit.ase.maze.exception.MapFormatWrongException;
 import de.tum.cit.ase.maze.menu.EndScreen;
 import de.tum.cit.ase.maze.menu.LevelSelectScreen;
 import de.tum.cit.ase.maze.menu.MenuScreen;
@@ -66,8 +67,7 @@ public class MazeRunnerGame extends Game {
      * Switches to the menu screen.
      */
     public void goToMenu() {
-        menuScreen = new MenuScreen(this);
-        this.setScreen(menuScreen); // Set the current screen to MenuScreen
+        this.setScreen(new MenuScreen(this)); // Set the current screen to MenuScreen
         if (gameScreen != null) {
             gameScreen.dispose(); // Dispose the game screen if it exists
             gameScreen = null;
@@ -78,8 +78,13 @@ public class MazeRunnerGame extends Game {
      * Switches to the game screen.
      */
     public void goToGame(String levelName) {
-        gameScreen = new GameScreen(this, levelName);
-        this.setScreen(gameScreen); // Set the current screen to GameScreen
+        // Try catch to check the map format and stop the maze from loading if the map file is wrong
+        try {
+            this.setScreen(new GameScreen(this, levelName)); // Set the current screen to GameScreen
+        } catch (MapFormatWrongException e) {
+            goToLevel(); //TODO display the message for the user on screen.
+        }
+
         if (menuScreen != null) {
             menuScreen.dispose(); // Dispose the menu screen if it exists
             menuScreen = null;

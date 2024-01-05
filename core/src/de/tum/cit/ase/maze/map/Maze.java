@@ -81,7 +81,7 @@ public class Maze {
 
         try {
             String line;
-            while ((line = reader.readLine()) != null) {
+            while ((line = reader.readLine()) != null && line.matches("^[0-9WH=,]*$")) { // regex to filter out all wrong inputs in the map file
                 String[] splitData = line.split("=");
                 String[] coordinates = splitData[0].split(",");
                 if (splitData[0].startsWith("W") || splitData[0].startsWith("H")) continue; // filter out the metadata
@@ -193,6 +193,18 @@ public class Maze {
      */
     public static int convertToMapPosition(float number) {
         return Math.round(number / tileSize);
+    }
+
+    /**
+     * Checks if a map file is valid
+     * @return true, when all necessary parts of the map exist, otherwise false
+     */
+    public boolean checkValid() {
+        if (width != 0 && height != 0)
+            if (entryLocation != null && !exitLocations.isEmpty())
+                if (key != null)
+                    return true;
+        return false;
     }
 
     // Getters
