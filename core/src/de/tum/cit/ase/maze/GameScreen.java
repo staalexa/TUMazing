@@ -15,7 +15,8 @@ import de.tum.cit.ase.maze.exception.MapFormatWrongException;
 import de.tum.cit.ase.maze.hud.HUD;
 import de.tum.cit.ase.maze.map.Maze;
 import de.tum.cit.ase.maze.map.Key;
-import de.tum.cit.ase.maze.util.EndingState;
+import de.tum.cit.ase.maze.menu.PauseScreen;
+import de.tum.cit.ase.maze.util.GameState;
 import de.tum.cit.ase.maze.util.Position;
 
 import java.util.ArrayList;
@@ -30,7 +31,6 @@ public class GameScreen implements Screen {
 
     private final MazeRunnerGame game;
     private final OrthographicCamera camera;
-    private final BitmapFont font;
     private float sinusInput = 0f;
     private final SpriteBatch spriteBatch;
     private final Maze maze;
@@ -38,6 +38,7 @@ public class GameScreen implements Screen {
     private final Character character;
     private final HUD hud;
     private final Key key;
+    private final Sound gameOverSound, lifeLostSound, collectKeySound, victorySound;
 
     /**
      * Constructor for GameScreen. Sets up the camera and font.
@@ -51,9 +52,6 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
         camera.zoom = 0.15f;
-
-        // Get the font from the game's skin
-        font = game.getSkin().getFont("font");
 
         //Get textures
         tiles = new Texture(Gdx.files.internal("assets/basictiles.png"));
@@ -80,8 +78,8 @@ public class GameScreen implements Screen {
     // Screen interface methods with necessary functionality
     @Override
     public void render(float delta) {
-        // Check for escape key press to go back to the menu
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) game.goToMenu();
+        // Check for escape key press to go to the pause screen
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) pause();
 
         ScreenUtils.clear(0, 0, 0, 1); // Clear the screen
 
@@ -194,7 +192,7 @@ public class GameScreen implements Screen {
         for (Position exit : maze.getExitLocations()) {
             if (character.getPosition().isWithinRange(exit)) {
                 victorySound.play(1f);
-                game.goToEnd(EndingState.Victory);
+                game.goToEnd(GameState.VICTORY);
             }
         }
     }

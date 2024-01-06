@@ -37,11 +37,16 @@ public abstract class Entity {
 
     /**
      * Loose a life of the player
-     */
-    public void looseLife() {
+     * @return true if the person is still alive after, false if not
+     * */
+    public boolean looseLife() {
         lives--;
         hud.loseLife();
-        if (checkIfDead()) game.goToEnd(GameState.DEATH);
+        if (checkIfDead()) {
+            game.goToEnd(GameState.DEATH);
+            return false;
+        }
+        else return true;
     }
 
     /**
