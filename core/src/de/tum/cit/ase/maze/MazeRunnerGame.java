@@ -80,7 +80,8 @@ public class MazeRunnerGame extends Game {
     public void goToGame(String levelName) {
         // Try catch to check the map format and stop the maze from loading if the map file is wrong
         try {
-            this.setScreen(new GameScreen(this, levelName)); // Set the current screen to GameScreen
+            gameScreen = new GameScreen(this, levelName);
+            this.setScreen(gameScreen); // Set the current screen to GameScreen
         } catch (MapFormatWrongException e) {
             goToLevel(); //TODO display the message for the user on screen.
         }
@@ -118,7 +119,7 @@ public class MazeRunnerGame extends Game {
             menuScreen.dispose();
             menuScreen = null;
         }
-        if(gameScreen != null) {
+        if (gameScreen != null) {
             gameScreen.dispose();
             gameScreen = null;
         }
