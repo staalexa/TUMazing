@@ -15,6 +15,7 @@ import de.tum.cit.ase.maze.menu.LevelSelectScreen;
 import de.tum.cit.ase.maze.menu.MenuScreen;
 import de.tum.cit.ase.maze.menu.PauseScreen;
 import de.tum.cit.ase.maze.util.GameState;
+import de.tum.cit.ase.maze.util.MapGenerator;
 import games.spooky.gdx.nativefilechooser.NativeFileChooser;
 
 /**
@@ -60,7 +61,11 @@ public class MazeRunnerGame extends Game {
         backgroundMusic.setLooping(true);
         //backgroundMusic.play();
 
-        goToMenu(); // Navigate to the menu screen
+        MapGenerator gen = new MapGenerator(20);
+
+        return;
+
+        //goToMenu(); // Navigate to the menu screen
     }
 
     /**
