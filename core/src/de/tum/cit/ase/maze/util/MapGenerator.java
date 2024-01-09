@@ -1,7 +1,6 @@
 package de.tum.cit.ase.maze.util;
 
-import java.util.Arrays;
-import java.util.Random;
+import java.util.*;
 
 public class MapGenerator {
     private int mapsize;
@@ -15,19 +14,63 @@ public class MapGenerator {
 
         genEmptyMapData(mapData);
 
-        genOuterWall();
-
-        genInnerWalls();
-
-        spawnMobs();
-
-        placeTraps();
-
-        spawnKey();
+        genMap();
 
         printMap();
 
-        printMapData();
+    }
+
+    public void genMap() {
+        genOuterWall();
+        genInnerWalls();
+        spawnMobs();
+        placeTraps();
+        spawnKey();
+
+        if(!checkValidMap()) genMap();
+    }
+
+    private boolean checkValidMap() {
+            // Initialize the priority queue, the distances map, and the visited set
+            PriorityQueue<int[]> queue = new PriorityQueue<>(Comparator.comparingInt(a -> a[2]));
+            Map<String, Integer> distances = new HashMap<>();
+            Set<String> visited = new HashSet<>();
+
+            // Find the entry and exit points
+            int[] entry = null, exit = null, key = null;
+            for (int i = 0; i < mapsize; i++) {
+                for (int j = 0; j < mapsize; j++) {
+                    if (mapData[i][j] == 1) entry = new int[]{i, j, 0};
+                    else if (mapData[i][j] == 2) exit = new int[]{i, j};
+                    else if (mapData[i][j] == 5) key = new int[]{i, j};
+                    distances.put(i + "," + j, Integer.MAX_VALUE);
+                }
+            }
+
+            // Add the entry point to the queue with distance 0
+            queue.add(entry);
+            distances.put(entry[0] + "," + entry[1], 0);
+
+            // Process the nodes in the queue
+            while (!queue.isEmpty()) {
+                int[] node = queue.poll();
+                visited.add(node[0] + "," + node[1]);
+
+                // Visit all the neighbors
+                for (int[] neighbor : new int[][]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}) {
+                    int newX = node[0] + neighbor[0], newY = node[1] + neighbor[1];
+                    if (newX >= 0 && newX < mapsize && newY >= 0 && newY < mapsize && !visited.contains(newX + "," + newY)) {
+                        int newDist = distances.get(node[0] + "," + node[1]) + 1;
+                        if (newDist < distances.get(newX + "," + newY)) {
+                            distances.put(newX + "," + newY, newDist);
+                            queue.add(new int[]{newX, newY, newDist});
+                        }
+                    }
+                }
+            }
+
+            // Check if there is a path from the entry to the key and from the key to the exit
+            return distances.get(key[0] + "," + key[1]) != Integer.MAX_VALUE && distances.get(exit[0] + "," + exit[1]) != Integer.MAX_VALUE;
     }
 
     /**
@@ -149,5 +192,9 @@ public class MapGenerator {
                 }
             }
         }
+    }
+
+    public int[][] getMapData() {
+        return mapData;
     }
 }
