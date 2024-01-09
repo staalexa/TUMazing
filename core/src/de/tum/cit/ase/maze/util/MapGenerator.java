@@ -6,8 +6,10 @@ import java.util.Random;
 public class MapGenerator {
     private int mapsize;
     private int[][] mapData;
+    private Random rand;
 
     public MapGenerator(int mapsize) {
+        rand = new Random();
         this.mapsize = mapsize;
         this.mapData = new int[mapsize][mapsize];
 
