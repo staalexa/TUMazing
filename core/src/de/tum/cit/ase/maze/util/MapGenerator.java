@@ -6,6 +6,7 @@ public class MapGenerator {
     private int mapsize;
     private int[][] mapData;
     private Random rand;
+    private Node entry, exit;
 
     public MapGenerator(int mapsize) {
         rand = new Random();
@@ -26,8 +27,6 @@ public class MapGenerator {
         spawnMobs();
         placeTraps();
         spawnKey();
-
-        if (!checkValidMap()) genMap();
     }
 
     private double distanceBetween(Node a, Node b) {
@@ -38,51 +37,97 @@ public class MapGenerator {
     }
 
     private void findPath() {
-        List<Node> openSet = new ArrayList<>();
-        HashMap<Node, Node> cameFrom = new HashMap<>();
+        Node[][] nodes = new Node[mapsize][mapsize];
+        for (int i = 0; i < mapsize; i++)
+            for (int j = 0; j < mapsize; j++)
+                nodes[i][j] = new Node(i, j, mapData[i][j]);
+        Node startNode = entry;
+        Node goalNode = exit;
     }
 
-    private boolean checkValidMap() {
-        // Initialize the priority queue, the distances map, and the visited set
-        PriorityQueue<int[]> queue = new PriorityQueue<>(Comparator.comparingInt(a -> a[2]));
-        Map<String, Integer> distances = new HashMap<>();
-        Set<String> visited = new HashSet<>();
+    public static List<Node> AStar(int[][] grid, Node startNode, Node goalNode) {
+        Set<Node> openSet = new HashSet<>(); // Set of nodes to be evaluated
+        openSet.add(startNode);
 
-        // Find the entry and exit points
-        int[] entry = null, exit = null, key = null;
-        for (int i = 0; i < mapsize; i++) {
-            for (int j = 0; j < mapsize; j++) {
-                if (mapData[i][j] == 1) entry = new int[]{i, j, 0};
-                else if (mapData[i][j] == 2) exit = new int[]{i, j};
-                else if (mapData[i][j] == 5) key = new int[]{i, j};
-                distances.put(i + "," + j, Integer.MAX_VALUE);
+        Map<Node, Node> cameFrom = new HashMap<>(); // Mapping of nodes and their predecessors
+        Map<Node, Double> gScore = new HashMap<>(); // Map to store gScore for each node
+        Map<Node, Double> fScore = new HashMap<>(); // Map to store fScore for each node
+
+        gScore.put(startNode, 0.0); // gScore for start node is 0
+        fScore.put(startNode, calculateHeuristic(startNode, goalNode)); // Initial fScore for start node
+
+        while (!openSet.isEmpty()) {
+            Node current = getNodeWithLowestFScore(openSet, fScore); // Get node with lowest fScore
+
+            if (current.equals(goalNode)) {
+                return reconstructPath(cameFrom, current); // Goal node reached, reconstruct path
             }
-        }
 
-        // Add the entry point to the queue with distance 0
-        queue.add(entry);
-        distances.put(entry[0] + "," + entry[1], 0);
+            openSet.remove(current);
 
-        // Process the nodes in the queue
-        while (!queue.isEmpty()) {
-            int[] node = queue.poll();
-            visited.add(node[0] + "," + node[1]);
+            for (Node neighbor : getNeighbors(current, grid)) {
+                double tentative_gScore = gScore.getOrDefault(current, Double.POSITIVE_INFINITY)
+                        + calculateDistance(current, neighbor); // Calculate tentative gScore
 
-            // Visit all the neighbors
-            for (int[] neighbor : new int[][]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}) {
-                int newX = node[0] + neighbor[0], newY = node[1] + neighbor[1];
-                if (newX >= 0 && newX < mapsize && newY >= 0 && newY < mapsize && !visited.contains(newX + "," + newY)) {
-                    int newDist = distances.get(node[0] + "," + node[1]) + 1;
-                    if (newDist < distances.get(newX + "," + newY)) {
-                        distances.put(newX + "," + newY, newDist);
-                        queue.add(new int[]{newX, newY, newDist});
-                    }
+                if (tentative_gScore < gScore.getOrDefault(neighbor, Double.POSITIVE_INFINITY)) {
+                    cameFrom.put(neighbor, current);
+                    gScore.put(neighbor, tentative_gScore);
+                    fScore.put(neighbor, tentative_gScore + calculateHeuristic(neighbor, goalNode));
+
+                    openSet.add(neighbor); // Add neighbor to openSet
                 }
             }
         }
 
-        // Check if there is a path from the entry to the key and from the key to the exit
-        return distances.get(key[0] + "," + key[1]) != Integer.MAX_VALUE && distances.get(exit[0] + "," + exit[1]) != Integer.MAX_VALUE;
+        return null; // Open set is empty but goal was not reached
+    }
+
+    private static Node getNodeWithLowestFScore(Set<Node> openSet, Map<Node, Double> fScore) {
+        Node nodeWithLowestFScore = null;
+        double lowestFScore = Double.POSITIVE_INFINITY;
+
+        // Iterate through each node in the open set
+        for (Node node : openSet) {
+            // Check if the node's fScore is lower than the lowest found so far
+            double nodeFScore = fScore.getOrDefault(node, Double.POSITIVE_INFINITY);
+            if (nodeFScore < lowestFScore) {
+                lowestFScore = nodeFScore;
+                nodeWithLowestFScore = node;
+            }
+        }
+
+        return nodeWithLowestFScore; // Return node with the lowest fScore
+    }
+
+    // Helper method to calculate heuristic (distance estimation from node to goal)
+    private static double calculateHeuristic(Node node, Node goalNode) {
+        // Implement your heuristic calculation here (e.g., Euclidean distance, Manhattan distance, etc.)
+        // Return an estimated distance from 'node' to 'goalNode'
+    }
+
+    // Helper method to reconstruct the path from 'cameFrom' map
+    private static List<Node> reconstructPath(Map<Node, Node> cameFrom, Node current) {
+        List<Node> path = new ArrayList<>();
+        path.add(current);
+
+        while (cameFrom.containsKey(current)) {
+            current = cameFrom.get(current);
+            path.add(0, current); // Prepend current node to the path
+        }
+
+        return path;
+    }
+
+    // Helper method to get neighbors of a node in the grid
+    private static List<Node> getNeighbors(Node node, int[][] grid) {
+        // Implement logic to get neighbors of 'node' from the 'grid'
+        // Return a list of neighboring nodes
+    }
+
+    // Helper method to calculate distance between nodes
+    private static double calculateDistance(Node node1, Node node2) {
+        // Implement your logic to calculate distance between 'node1' and 'node2'
+        // Return the calculated distance
     }
 
     /**
@@ -141,6 +186,8 @@ public class MapGenerator {
                 y = 0;
         }
         mapData[x][y] = type;
+        if (type == 1) entry = new Node(x, y, type);
+        else exit = new Node(x, y, type);
     }
 
     public void genInnerWalls() {
