@@ -1,139 +1,92 @@
 package de.tum.cit.ase.maze.util;
 
+import de.tum.cit.ase.maze.pathfind.AStar;
+import de.tum.cit.ase.maze.pathfind.Grid;
+import de.tum.cit.ase.maze.pathfind.Node;
+
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * This class generates a random map with the following properties:
+ * <ul>
+ *     <li>The map is surrounded by walls</li>
+ *     <li>The map has an entry and an exit door</li>
+ *     <li>The map has a valid path from the entry to the exit</li>
+ *     <li>The map has a valid path from the entry to the key</li>
+ *     <li>The map has a valid path from the key to the exit</li>
+ * </ul>
+ */
 public class MapGenerator {
-    private int mapsize;
-    private int[][] mapData;
-    private Random rand;
-    private Node entry, exit;
+    private final int mapSize;
+    private final int[][] mapData;
+    private final Random rand;
+    private Position entry, exit, key;
+    private Grid grid;
 
-    public MapGenerator(int mapsize) {
-        rand = new Random();
-        this.mapsize = mapsize;
-        this.mapData = new int[mapsize][mapsize];
+    /**
+     * Constructor of the MapGenerator. Initializes the mapSize and the mapData.
+     * @param mapSize the size of the map. We assume that the map is a square.
+     */
+    public MapGenerator(int mapSize) {
+        rand = ThreadLocalRandom.current();
+        this.mapSize = mapSize;
+        this.mapData = new int[mapSize][mapSize];
+        this.grid = new Grid(mapSize);
 
-        genEmptyMapData(mapData);
-
-        genMap();
+        // Try generating a valid map
+        while (!generateValidMap()) {
+            // Retry if the generated map is invalid
+            System.out.println("Map generation failed. Retrying...");
+        }
 
         printMap();
-
     }
 
-    public void genMap() {
+
+    /**
+     * Generates a valid map with the following properties:
+     * <ul>
+     *     <li>The map is surrounded by walls</li>
+     *     <li>The map has an entry and an exit door</li>
+     *     <li>The map has a valid path from the entry to the exit</li>
+     *     <li>The map has a valid path from the entry to the key</li>
+     *     <li>The map has a valid path from the key to the exit</li>
+     * </ul>
+     * @return true if the map is valid, false otherwise
+     */
+    private boolean generateValidMap() {
+        genEmptyMapData(mapData);
         genOuterWall();
         genInnerWalls();
         spawnMobs();
         placeTraps();
         spawnKey();
-    }
 
-    private double distanceBetween(Node a, Node b) {
-        int xDifference = Math.abs(a.getX() - b.getX());
-        int yDifference = Math.abs(a.getY() - b.getY());
+        grid.fillGrid(mapData);
 
-        return Math.sqrt(Math.pow(xDifference, 2) + Math.pow(yDifference, 2));
-    }
+        List<Node> result = AStar.findPath(grid, entry, key);
 
-    private void findPath() {
-        Node[][] nodes = new Node[mapsize][mapsize];
-        for (int i = 0; i < mapsize; i++)
-            for (int j = 0; j < mapsize; j++)
-                nodes[i][j] = new Node(i, j, mapData[i][j]);
-        Node startNode = entry;
-        Node goalNode = exit;
-    }
+        if(!checkPath(result)) return false;
 
-    public static List<Node> AStar(int[][] grid, Node startNode, Node goalNode) {
-        Set<Node> openSet = new HashSet<>(); // Set of nodes to be evaluated
-        openSet.add(startNode);
+        result = AStar.findPath(grid, key, exit);
+        if(!checkPath(result)) return false;
 
-        Map<Node, Node> cameFrom = new HashMap<>(); // Mapping of nodes and their predecessors
-        Map<Node, Double> gScore = new HashMap<>(); // Map to store gScore for each node
-        Map<Node, Double> fScore = new HashMap<>(); // Map to store fScore for each node
-
-        gScore.put(startNode, 0.0); // gScore for start node is 0
-        fScore.put(startNode, calculateHeuristic(startNode, goalNode)); // Initial fScore for start node
-
-        while (!openSet.isEmpty()) {
-            Node current = getNodeWithLowestFScore(openSet, fScore); // Get node with lowest fScore
-
-            if (current.equals(goalNode)) {
-                return reconstructPath(cameFrom, current); // Goal node reached, reconstruct path
-            }
-
-            openSet.remove(current);
-
-            for (Node neighbor : getNeighbors(current, grid)) {
-                double tentative_gScore = gScore.getOrDefault(current, Double.POSITIVE_INFINITY)
-                        + calculateDistance(current, neighbor); // Calculate tentative gScore
-
-                if (tentative_gScore < gScore.getOrDefault(neighbor, Double.POSITIVE_INFINITY)) {
-                    cameFrom.put(neighbor, current);
-                    gScore.put(neighbor, tentative_gScore);
-                    fScore.put(neighbor, tentative_gScore + calculateHeuristic(neighbor, goalNode));
-
-                    openSet.add(neighbor); // Add neighbor to openSet
-                }
-            }
-        }
-
-        return null; // Open set is empty but goal was not reached
-    }
-
-    private static Node getNodeWithLowestFScore(Set<Node> openSet, Map<Node, Double> fScore) {
-        Node nodeWithLowestFScore = null;
-        double lowestFScore = Double.POSITIVE_INFINITY;
-
-        // Iterate through each node in the open set
-        for (Node node : openSet) {
-            // Check if the node's fScore is lower than the lowest found so far
-            double nodeFScore = fScore.getOrDefault(node, Double.POSITIVE_INFINITY);
-            if (nodeFScore < lowestFScore) {
-                lowestFScore = nodeFScore;
-                nodeWithLowestFScore = node;
-            }
-        }
-
-        return nodeWithLowestFScore; // Return node with the lowest fScore
-    }
-
-    // Helper method to calculate heuristic (distance estimation from node to goal)
-    private static double calculateHeuristic(Node node, Node goalNode) {
-        // Implement your heuristic calculation here (e.g., Euclidean distance, Manhattan distance, etc.)
-        // Return an estimated distance from 'node' to 'goalNode'
-    }
-
-    // Helper method to reconstruct the path from 'cameFrom' map
-    private static List<Node> reconstructPath(Map<Node, Node> cameFrom, Node current) {
-        List<Node> path = new ArrayList<>();
-        path.add(current);
-
-        while (cameFrom.containsKey(current)) {
-            current = cameFrom.get(current);
-            path.add(0, current); // Prepend current node to the path
-        }
-
-        return path;
-    }
-
-    // Helper method to get neighbors of a node in the grid
-    private static List<Node> getNeighbors(Node node, int[][] grid) {
-        // Implement logic to get neighbors of 'node' from the 'grid'
-        // Return a list of neighboring nodes
-    }
-
-    // Helper method to calculate distance between nodes
-    private static double calculateDistance(Node node1, Node node2) {
-        // Implement your logic to calculate distance between 'node1' and 'node2'
-        // Return the calculated distance
+        return true;
     }
 
     /**
-     * Fills a 2d array with empty fields
-     *
-     * @param mapData an int[][]
+     * Checks if the given path is valid
+     * @param result the path to check
+     * @return true if the path is valid, false otherwise
+     */
+    private boolean checkPath(List<Node> result) {
+        return result != null && !result.isEmpty();
+    }
+
+    /**
+     * fill the map with 9s, which means empty
+     * @param mapData the map to fill
      */
     private void genEmptyMapData(int[][] mapData) {
         for (int[] row : mapData)
@@ -144,11 +97,11 @@ public class MapGenerator {
      * create outer walls all around the map, and create the entry and exit doors
      */
     private void genOuterWall() {
-        for (int i = 0; i < mapsize; i++) {
+        for (int i = 0; i < mapSize; i++) {
             mapData[0][i] = 0;
             mapData[i][0] = 0;
-            mapData[mapsize - 1][i] = 0;
-            mapData[i][mapsize - 1] = 0;
+            mapData[mapSize - 1][i] = 0;
+            mapData[i][mapSize - 1] = 0;
         }
 
         createDoor(1);
@@ -167,27 +120,27 @@ public class MapGenerator {
         switch (rand.nextInt(4)) {
             case 0:
                 x = 0;
-                y = rand.nextInt(0, mapsize - 2);
+                y = rand.nextInt(0, mapSize - 2);
                 break;
             case 1:
                 y = 0;
-                x = rand.nextInt(0, mapsize - 2);
+                x = rand.nextInt(0, mapSize - 2);
                 break;
             case 2:
-                x = mapsize - 1;
-                y = rand.nextInt(0, mapsize - 2);
+                x = mapSize - 1;
+                y = rand.nextInt(0, mapSize - 2);
                 break;
             case 3:
-                y = mapsize - 1;
-                x = rand.nextInt(0, mapsize - 2);
+                y = mapSize - 1;
+                x = rand.nextInt(0, mapSize - 2);
                 break;
             default:
                 x = 0;
                 y = 0;
         }
         mapData[x][y] = type;
-        if (type == 1) entry = new Node(x, y, type);
-        else exit = new Node(x, y, type);
+        if (type == 1) entry = new Position(x, y, false);
+        else exit = new Position(x, y, false);
     }
 
     public void genInnerWalls() {
@@ -202,18 +155,31 @@ public class MapGenerator {
         genRandomMapObject(15, 3);
     }
 
+    /**
+     * spawn the key in the map
+     */
     public void spawnKey() {
-        int x = rand.nextInt(0, mapsize - 2);
-        int y = rand.nextInt(0, mapsize - 2);
+        while (true) {
+            int x = rand.nextInt(0, mapSize - 2);
+            int y = rand.nextInt(0, mapSize - 2);
 
-        if (mapData[x][y] == 9) mapData[x][y] = 5;
-        else spawnKey();
+            // Check that the key is not placed on a wall
+            if (mapData[x][y] == 9) {
+                mapData[x][y] = 5;
+                key = new Position(x, y, false);
+                break;
+            }
+        }
     }
 
-
+    /**
+     * generate random objects in the map
+     * @param possibility the possibility of generating an object (1/possibility)
+     * @param objectType the type of the object to generate
+     */
     public void genRandomMapObject(int possibility, int objectType) {
-        for (int i = 0; i < mapsize; i++)
-            for (int j = 0; j < mapsize; j++)
+        for (int i = 0; i < mapSize; i++)
+            for (int j = 0; j < mapSize; j++)
                 if (rand.nextInt(possibility) == 0)
                     if (mapData[i][j] == 9) mapData[i][j] = objectType;
     }
@@ -238,6 +204,9 @@ public class MapGenerator {
         }
     }
 
+    /**
+     * For testing, prints the map data into console, this can be used as a level generator
+     */
     public void printMapData() {
         for (int y = mapData[1].length - 1; y >= 0; y--) {
             for (int x = 0; x < mapData[0].length; x++) {
@@ -253,7 +222,4 @@ public class MapGenerator {
         }
     }
 
-    public int[][] getMapData() {
-        return mapData;
-    }
 }
