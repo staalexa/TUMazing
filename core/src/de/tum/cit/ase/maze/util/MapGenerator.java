@@ -222,4 +222,7 @@ public class MapGenerator {
         }
     }
 
+    public int[][] getMapData() {
+        return mapData;
+    }
 }

@@ -61,11 +61,7 @@ public class MazeRunnerGame extends Game {
         backgroundMusic.setLooping(true);
         //backgroundMusic.play();
 
-        MapGenerator gen = new MapGenerator(20);
-
-        return;
-
-        //goToMenu(); // Navigate to the menu screen
+        goToMenu(); // Navigate to the menu screen
     }
 
     /**
