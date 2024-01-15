@@ -72,7 +72,7 @@ public class GameScreen implements Screen {
         gameOverSound = Gdx.audio.newSound(Gdx.files.internal("assets/sounds/game-over.wav"));
         lifeLostSound = Gdx.audio.newSound(Gdx.files.internal("assets/sounds/life-lost.wav"));
         collectKeySound = Gdx.audio.newSound(Gdx.files.internal("assets/sounds/collect-key.mp3"));
-        victorySound = Gdx.audio.newSound(Gdx.files.internal("assets/sounds/victory.mp3"));
+        victorySound = Gdx.audio.newSound(Gdx.files.internal("assets/sounds/victory.wav"));
     }
 
     // Screen interface methods with necessary functionality
