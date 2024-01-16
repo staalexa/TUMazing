@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import de.tum.cit.ase.maze.MazeRunnerGame;
 import de.tum.cit.ase.maze.entitity.Mob;
+import de.tum.cit.ase.maze.util.MapGenerator;
 import de.tum.cit.ase.maze.util.Position;
 
 import java.io.BufferedReader;
@@ -32,20 +33,26 @@ public class Maze {
 
     public Maze(String levelName, Key key, MazeRunnerGame game) {
         this.key = key;
+        this.game = game;
         width = 20;
         height = 20;
+        tileSize = 16;
 
         trapLocations = new ArrayList<>();
         exitLocations = new ArrayList<>();
         mobs = new ArrayList<>();
 
-        getProperties(levelName);
-        mapData = new int[width][height];
-        for (int[] row : mapData)
-            Arrays.fill(row, 9);
-        loadMap(levelName);
-        tileSize = 16;
-        this.game = game;
+        if (levelName.equals("RANDOM")) {
+            MapGenerator randomMap = new MapGenerator(20);
+            mapData = randomMap.getMapData();
+            loadMapData(mapData);
+        } else {
+            getProperties(levelName);
+            mapData = new int[width][height];
+            for (int[] row : mapData)
+                Arrays.fill(row, 9);
+            loadMap(levelName);
+        }
     }
 
     /**
@@ -102,6 +109,28 @@ public class Maze {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Load the map from the level name. Assumes that level files are like the given template
+     * @param mapData 2D array of the map
+     */
+    private void loadMapData(int[][] mapData) {
+
+        for (int x = 0; x < mapData.length; x++) {
+            for (int y = 0; y < mapData.length ; y++) {
+                switch (mapData[x][y]) {
+                    case 1 -> entryLocation = new Position(x, y, true);
+                    case 2 -> exitLocations.add(new Position(x, y, true));
+                    case 3 -> trapLocations.add(new Position(x, y, true));
+                    case 4 -> mobs.add(new Mob(new Position(x, y, true), game));
+                    case 5 -> key.setPosition(new Position(x, y, true));
+                }
+            }
+        }
+
+
+
     }
 
     /**

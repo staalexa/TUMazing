@@ -102,5 +102,16 @@ public class LevelSelectScreen implements Screen {
         } else {
             System.err.println("Folder not found or is not a directory.");
         }
+
+        // Display the random Level
+        TextButton button = new TextButton("random level", game.getSkin());
+        table.add(button).width(300).padBottom(30).row();
+        button.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.goToGame("RANDOM"); // Change to the game screen when button is pressed
+            }
+        });
     }
+
 }
