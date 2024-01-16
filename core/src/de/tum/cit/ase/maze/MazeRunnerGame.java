@@ -15,7 +15,6 @@ import de.tum.cit.ase.maze.menu.LevelSelectScreen;
 import de.tum.cit.ase.maze.menu.MenuScreen;
 import de.tum.cit.ase.maze.menu.PauseScreen;
 import de.tum.cit.ase.maze.util.GameState;
-import de.tum.cit.ase.maze.util.MapGenerator;
 import games.spooky.gdx.nativefilechooser.NativeFileChooser;
 
 /**
@@ -57,12 +56,9 @@ public class MazeRunnerGame extends Game {
 
         // Play some background music
         // Background sound
-        /*
         Music backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("assets/sounds/menu.wav"));
         backgroundMusic.setLooping(true);
         backgroundMusic.play();
-
-         */
 
         goToMenu(); // Navigate to the menu screen
     }

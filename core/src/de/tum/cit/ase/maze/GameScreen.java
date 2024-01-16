@@ -38,7 +38,7 @@ public class GameScreen implements Screen {
     private final Character character;
     private final HUD hud;
     private final Key key;
-    //private final Sound gameOverSound, lifeLostSound, collectKeySound, victorySound;
+    private final Sound gameOverSound, lifeLostSound, collectKeySound, victorySound;
 
     /**
      * Constructor for GameScreen. Sets up the camera and font.
@@ -69,13 +69,11 @@ public class GameScreen implements Screen {
         character = new Character(maze.getEntryLocation(), game, hud);
 
         //Get sounds
-        /*
+
         gameOverSound = Gdx.audio.newSound(Gdx.files.internal("assets/sounds/game-over.wav"));
         lifeLostSound = Gdx.audio.newSound(Gdx.files.internal("assets/sounds/life-lost.wav"));
         collectKeySound = Gdx.audio.newSound(Gdx.files.internal("assets/sounds/collect-key.mp3"));
         victorySound = Gdx.audio.newSound(Gdx.files.internal("assets/sounds/victory.wav"));
-
-         */
     }
 
     // Screen interface methods with necessary functionality
@@ -129,13 +127,10 @@ public class GameScreen implements Screen {
         tiles.dispose();
         objects.dispose();
         mobs.dispose();
-        /*
         gameOverSound.dispose();
         lifeLostSound.dispose();
         collectKeySound.dispose();
         victorySound.dispose();
-
-         */
     }
 
     // Additional methods and logic can be added as needed for the game screen
@@ -170,7 +165,7 @@ public class GameScreen implements Screen {
         // Handles Key
         if (character.getPosition().isWithinRange(key.getPosition())) {
             key.pickUp(this);
-            //collectKeySound.play(1f);
+            collectKeySound.play(1f);
         }
 
         // Handles Traps
@@ -180,11 +175,8 @@ public class GameScreen implements Screen {
                 maze.activateTrap(trapPosition);
                 activatedTraps.add(trapPosition);
 
-                /*
                 if (character.looseLife()) lifeLostSound.play();
                 else gameOverSound.play();
-
-                 */
             }
         }
         // Cleanup
@@ -194,17 +186,15 @@ public class GameScreen implements Screen {
         // Handles Mobs
         for (Mob mob : maze.getMobs())
             if (character.getPosition().isWithinRange(mob.getPosition()) && (System.currentTimeMillis() - mob.getLastKill()) >= 3000) {
-                /*
                 if (character.looseLife()) lifeLostSound.play();
                 else gameOverSound.play();
 
-                 */
                 mob.setLastKill(System.currentTimeMillis());
             }
         //Handles Exit
         for (Position exit : maze.getExitLocations()) {
             if (character.getPosition().isWithinRange(exit)) {
-                //victorySound.play(1f);
+                victorySound.play(1f);
                 game.goToEnd(GameState.VICTORY);
             }
         }
