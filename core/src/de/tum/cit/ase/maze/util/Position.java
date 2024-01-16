@@ -52,21 +52,22 @@ public class Position {
      * @param maze      an instance of the current maze
      */
     public void move(Direction direction, int speed, Maze maze) {
+        int increase = 0;
         switch (direction) {
             case UP:
-                if (!maze.isWall(x, y + speed + 10))
+                if (!maze.isWall(x + 5, y + speed + 10))
                     y += speed;
                 break;
             case DOWN:
-                if (!maze.isWall(x, y - speed))
+                if (!maze.isWall(x + 3, y - speed + 3))
                     y -= speed;
                 break;
             case LEFT:
-                if (!maze.isWall(x - speed, y))
+                if (!maze.isWall(x - speed, y + 10))
                     x -= speed;
                 break;
             case RIGHT:
-                if (!maze.isWall(x + speed + 10, y))
+                if (!maze.isWall(x + speed + 10, y + 3))
                     x += speed;
                 break;
         }
@@ -74,6 +75,7 @@ public class Position {
 
     /**
      * Calculates threshold distance between two positions
+     *
      * @param other Another position
      * @return true if the two positions have max the range 5 between them (translates to when the positions are the same)
      */
