@@ -141,7 +141,7 @@ public class GameScreen implements Screen {
     private void renderMaze() {
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
-        maze.drawMaze(spriteBatch, tiles, objects, mobs);
+        maze.drawMaze(spriteBatch, tiles, objects, mobs, Gdx.graphics.getDeltaTime());
         spriteBatch.end();
     }
 

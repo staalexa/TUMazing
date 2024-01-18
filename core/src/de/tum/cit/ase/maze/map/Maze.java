@@ -3,6 +3,7 @@ package de.tum.cit.ase.maze.map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import de.tum.cit.ase.maze.MazeRunnerGame;
@@ -25,11 +26,14 @@ public class Maze {
     private int width, height;
     private TextureRegion wallTexture, pathTexture, entryTexture, exitTexture, trapTexture,
             keyTexture, enemyTexture;
+    private List<TextureRegion> fireFrames;
     private Position entryLocation, keyLocation;
     private List<Position> trapLocations, exitLocations;
     private List<Mob> mobs;
     private Key key;
     private MazeRunnerGame game;
+    private float stateTime;
+
 
     public Maze(String levelName, Key key, MazeRunnerGame game) {
         this.key = key;
@@ -37,6 +41,8 @@ public class Maze {
         width = 20;
         height = 20;
         tileSize = 16;
+        fireFrames = new ArrayList<>();
+        stateTime = 0f;
 
         trapLocations = new ArrayList<>();
         exitLocations = new ArrayList<>();
@@ -134,13 +140,16 @@ public class Maze {
     }
 
     /**
-     * Draws a maze out of a given Map. Creates predefined texture regions.
+     * Draws the maze on the screen
      *
      * @param spriteBatch SpriteBatch
-     * @param tiles       Texture of all possible Tiles
-     * @param objects     Texture of all possible Objects
+     * @param tiles       Texture of the tiles
+     * @param objects     Texture of the objects
+     * @param mobs        Texture of the mobs
+     * @param delta       Time since last frame
      */
-    public void drawMaze(SpriteBatch spriteBatch, Texture tiles, Texture objects, Texture mobs) {
+    public void drawMaze(SpriteBatch spriteBatch, Texture tiles, Texture objects, Texture mobs, float delta) {
+
         // Get all textures
         TextureRegion[][] textureRegions = TextureRegion.split(tiles, tileSize, tileSize);
         TextureRegion[][] objectRegions = TextureRegion.split(objects, tileSize, tileSize);
@@ -149,10 +158,16 @@ public class Maze {
         pathTexture = textureRegions[0][5];
         entryTexture = textureRegions[6][2];
         exitTexture = textureRegions[6][0];
-        trapTexture = textureRegions[6][5];
         keyTexture = objectRegions[4][1];
         enemyTexture = mobRegions[5][9];
 
+        // Create fire animation
+        fireFrames.addAll(Arrays.asList(objectRegions[3]).subList(4, 11)); // add frames
+
+        Animation<TextureRegion> fireAnimation = new Animation<>(0.1f, fireFrames.toArray(TextureRegion[]::new));
+
+
+        float stateTime = this.stateTime + delta; // update the stateTime variable for the next loop;
         int mobIndex = 0;
 
         for (int y = mapData[1].length - 1; y >= 0; y--) {
@@ -161,18 +176,19 @@ public class Maze {
                 float yPos = y * wallTexture.getRegionHeight(); // Calculate y position
                 switch (mapData[x][y]) {
                     case 0 -> drawTexture(spriteBatch, xPos, yPos, wallTexture);
-                    //case 1 -> drawTexture(spriteBatch, xPos, yPos, entryTexture, scale);
+                    //case 1 -> drawTexture(spriteBatch, xPos, yPos, entryTexture, scale); // TODO check if we want entry texture
                     case 2 -> drawTexture(spriteBatch, xPos, yPos, exitTexture);
-                    case 3 -> drawTexture(spriteBatch, xPos, yPos, trapTexture);
+                    case 3 -> drawTexture(spriteBatch, xPos, yPos, fireAnimation.getKeyFrame(stateTime, true)); // draw fire animation
                     case 4 -> {
                         Mob currentMob = this.mobs.get(mobIndex++);
                         currentMob.drawMob(this, spriteBatch, enemyTexture);
                     }
                     case 5 -> drawTexture(spriteBatch, xPos, yPos, keyTexture);
-                    //default -> drawTexture(spriteBatch, xPos, yPos, pathTexture, scale);
+                    //default -> drawTexture(spriteBatch, xPos, yPos, pathTexture, scale); //TODO check if we want path textures
                 }
             }
         }
+        this.stateTime += delta;
     }
 
     /**

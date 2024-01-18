@@ -14,10 +14,14 @@ import java.util.Random;
  */
 public class Mob extends Entity {
     private long lastKill;
+    private final int moveCooldown = 5;
+    private int currentCooldown;
+    private Direction currentDirection;
 
     public Mob(Position position, MazeRunnerGame game) {
         super(position, 1, 1, game, null);
         lastKill = 0;
+        currentDirection = Direction.UP;
     }
 
     /**
@@ -37,14 +41,22 @@ public class Mob extends Entity {
      * @param maze reference of the whole maze
      */
     public void moveMob(Maze maze) {
+
+        if(currentCooldown-- > 0) return;
+
         Random r = new Random();
         int result = r.nextInt(4);
         switch (result) {
-            case 0 -> moveEntity(Direction.UP, maze);
-            case 1 -> moveEntity(Direction.DOWN, maze);
-            case 2 -> moveEntity(Direction.RIGHT, maze);
-            case 3 -> moveEntity(Direction.LEFT, maze);
+            case 0 -> currentDirection = Direction.UP;
+            case 1 -> currentDirection = Direction.DOWN;
+            case 2 -> currentDirection = Direction.LEFT;
+            case 3 -> currentDirection = Direction.RIGHT;
         }
+
+        for (int i = 0; i < 3; i++)
+            moveEntity(currentDirection, maze);
+
+        currentCooldown = moveCooldown;
     }
 
     public long getLastKill() {
