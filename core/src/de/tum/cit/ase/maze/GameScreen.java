@@ -3,6 +3,7 @@ package de.tum.cit.ase.maze;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -39,6 +40,7 @@ public class GameScreen implements Screen {
     private final HUD hud;
     private final Key key;
     private final Sound gameOverSound, lifeLostSound, collectKeySound, victorySound;
+    private Music gameMusic;
 
     /**
      * Constructor for GameScreen. Sets up the camera and font.
@@ -74,6 +76,10 @@ public class GameScreen implements Screen {
         lifeLostSound = Gdx.audio.newSound(Gdx.files.internal("assets/sounds/life-lost.wav"));
         collectKeySound = Gdx.audio.newSound(Gdx.files.internal("assets/sounds/collect-key.mp3"));
         victorySound = Gdx.audio.newSound(Gdx.files.internal("assets/sounds/victory.wav"));
+        gameMusic = Gdx.audio.newMusic(Gdx.files.internal("assets/sounds/game.wav"));
+
+        gameMusic.setLooping(true);
+        gameMusic.play();
     }
 
     // Screen interface methods with necessary functionality
@@ -131,6 +137,7 @@ public class GameScreen implements Screen {
         lifeLostSound.dispose();
         collectKeySound.dispose();
         victorySound.dispose();
+        gameMusic.dispose();
     }
 
     // Additional methods and logic can be added as needed for the game screen
@@ -176,7 +183,10 @@ public class GameScreen implements Screen {
                 activatedTraps.add(trapPosition);
 
                 if (character.looseLife()) lifeLostSound.play();
-                else gameOverSound.play();
+                else {
+                    gameMusic.stop();
+                    gameOverSound.play();
+                }
             }
         }
         // Cleanup
