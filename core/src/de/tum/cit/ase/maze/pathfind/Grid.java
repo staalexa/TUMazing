@@ -30,7 +30,7 @@ public class Grid {
         // Initialize nodes
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                if(mapData[x][y] == 0)
+                if(mapData[x][y] == 0 || mapData[x][y] == 3)
                     grid[x][y] = new Node(new Position(x, y, false), true);
                 else grid[x][y] = new Node(new Position(x, y, false), false);
             }
