@@ -35,6 +35,7 @@ public class MazeRunnerGame extends Game {
 
     // Character animation downwards
     private Animation<TextureRegion> characterDownAnimation;
+    private Music backgroundMusic;
 
     /**
      * Constructor for MazeRunnerGame.
@@ -56,7 +57,7 @@ public class MazeRunnerGame extends Game {
 
         // Play some background music
         // Background sound
-        Music backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("assets/sounds/menu.wav"));
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("assets/sounds/menu.wav"));
         backgroundMusic.setLooping(true);
         backgroundMusic.play();
 
@@ -68,6 +69,7 @@ public class MazeRunnerGame extends Game {
      */
     public void goToMenu() {
         this.setScreen(new MenuScreen(this)); // Set the current screen to MenuScreen
+        backgroundMusic.play();
         if (gameScreen != null) {
             gameScreen.dispose(); // Dispose the game screen if it exists
             gameScreen = null;
@@ -81,6 +83,7 @@ public class MazeRunnerGame extends Game {
         // Try catch to check the map format and stop the maze from loading if the map file is wrong
         try {
             gameScreen = new GameScreen(this, levelName);
+            backgroundMusic.stop();
             this.setScreen(gameScreen); // Set the current screen to GameScreen
         } catch (MapFormatWrongException e) {
             goToLevel(); //TODO display the message for the user on screen.
