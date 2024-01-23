@@ -13,9 +13,9 @@ import de.tum.cit.ase.maze.util.Position;
 public abstract class Entity {
     private final Position position;
     private int lives;
-    private int speed;
-    private MazeRunnerGame game;
-    private HUD hud;
+    private final int speed;
+    private final MazeRunnerGame game;
+    private final HUD hud;
 
     public Entity(Position position, int lives, int speed, MazeRunnerGame game, HUD hud) {
         this.position = position;
@@ -37,16 +37,16 @@ public abstract class Entity {
 
     /**
      * Loose a life of the player
+     *
      * @return true if the person is still alive after, false if not
-     * */
+     */
     public boolean looseLife() {
         lives--;
         hud.loseLife();
         if (checkIfDead()) {
             game.goToEnd(GameState.DEATH);
             return false;
-        }
-        else return true;
+        } else return true;
     }
 
     /**
@@ -60,22 +60,5 @@ public abstract class Entity {
 
     public Position getPosition() {
         return position;
-    }
-
-    public int getLives() {
-        return lives;
-    }
-
-
-    public int getSpeed() {
-        return speed;
-    }
-
-    public void setLives(int lives) {
-        this.lives = lives;
-    }
-
-    public void setSpeed(int speed) {
-        this.speed = speed;
     }
 }

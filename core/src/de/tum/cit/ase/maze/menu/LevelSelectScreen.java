@@ -35,6 +35,7 @@ public class LevelSelectScreen implements Screen {
 
         listLevels(game, table);
     }
+
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
@@ -74,7 +75,8 @@ public class LevelSelectScreen implements Screen {
 
     /**
      * Prints a button list with all levels from the maps folder
-     * @param game MazeRunnerGame
+     *
+     * @param game  MazeRunnerGame
      * @param table Table to print the buttons
      */
     private void listLevels(MazeRunnerGame game, Table table) {
@@ -113,5 +115,4 @@ public class LevelSelectScreen implements Screen {
             }
         });
     }
-
 }

@@ -42,7 +42,6 @@ public class MazeRunnerGame extends Game {
     // Character animation up
     private Animation<TextureRegion> characterWalkingUpAnimation;
     // Character animation standing
-    private Animation<TextureRegion> characterStandingAnimation;
     private Music backgroundMusic;
 
     /**
@@ -137,7 +136,7 @@ public class MazeRunnerGame extends Game {
     }
 
     /**
-     * Loads the character animation from the character.png file.
+     * Loads the character animation for every single direction the character can go from the character.png file.
      */
     private void loadCharacterAnimation() {
         Texture walkSheet = new Texture(Gdx.files.internal("character.png"));
@@ -153,6 +152,8 @@ public class MazeRunnerGame extends Game {
         // Add all frames to the animation
         for (int col = 0; col < animationFrames; col++)
             walkFramesDown.add(new TextureRegion(walkSheet, col * frameWidth, 0, frameWidth, frameHeight));
+        // reverses the order, so when the character is standing, it is not standing as if it were walking, rather in a standing position
+        walkFramesDown.reverse();
 
         characterWalkingDownwardsAnimation = new Animation<>(0.1f, walkFramesDown);
 
@@ -163,6 +164,8 @@ public class MazeRunnerGame extends Game {
         // Add all frames to the animation
         for (int col = 0; col < animationFrames; col++)
             walkFramesRight.add(new TextureRegion(walkSheet, col * frameWidth, 2 * frameWidth, frameWidth, frameHeight));
+        // reverses the order, so when the character is standing, it is not standing as if it were walking, rather in a standing position
+        walkFramesRight.reverse();
 
         characterWalkingRightAnimation = new Animation<>(0.1f, walkFramesRight);
 
@@ -173,6 +176,8 @@ public class MazeRunnerGame extends Game {
         // Add all frames to the animation
         for (int col = 0; col < animationFrames; col++)
             walkFramesUp.add(new TextureRegion(walkSheet, col * frameWidth, 4 * frameWidth, frameWidth, frameHeight));
+        // reverses the order, so when the character is standing, it is not standing as if it were walking, rather in a standing position
+        walkFramesUp.reverse();
 
         characterWalkingUpAnimation = new Animation<>(0.1f, walkFramesUp);
 
@@ -183,18 +188,10 @@ public class MazeRunnerGame extends Game {
         // Add all frames to the animation
         for (int col = 0; col < animationFrames; col++)
             walkFramesLeft.add(new TextureRegion(walkSheet, col * frameWidth, 6 * frameWidth, frameWidth, frameHeight));
+        // reverses the order, so when the character is standing, it is not standing as if it were walking, rather in a standing position
+        walkFramesLeft.reverse();
 
         characterWalkingLeftAnimation = new Animation<>(0.1f, walkFramesLeft);
-
-        // Standing
-
-        Array<TextureRegion> standFrames = new Array<>(TextureRegion.class);
-
-        // Add all frames to the animation
-        for (int col = 0; col < animationFrames; col++)
-            standFrames.add(new TextureRegion(walkSheet, col, 0, frameWidth, frameHeight));
-
-        characterStandingAnimation = new Animation<>(0.1f, standFrames);
     }
 
     /**
@@ -239,9 +236,5 @@ public class MazeRunnerGame extends Game {
 
     public Animation<TextureRegion> getCharacterWalkingUpAnimation() {
         return characterWalkingUpAnimation;
-    }
-
-    public Animation<TextureRegion> getCharacterStandingAnimation() {
-        return characterStandingAnimation;
     }
 }
