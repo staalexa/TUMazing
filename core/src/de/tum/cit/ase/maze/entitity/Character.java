@@ -18,10 +18,13 @@ public class Character extends Entity {
     private boolean hasKey;
 
     private Direction direction;
+    private Position lastPosition;
 
     public Character(Position position, MazeRunnerGame game, HUD hud) {
         super(position, MAX_LIVES, 1, game, hud);
         hasKey = false;
+        direction = Direction.DOWN;
+        lastPosition = new Position(0, 0, false);
     }
 
     /**
@@ -30,10 +33,35 @@ public class Character extends Entity {
      * @param sinusInput the delta value added together through the game
      * @param game reference of the entire game, to be called
      */
-    public BiConsumer<Float, MazeRunnerGame> drawCharacter = (sinusInput, game) ->
-            game.getSpriteBatch().draw(
-                    game.getCharacterWalkingDownwardsAnimation().getKeyFrame(sinusInput, true), getPosition().getX(), getPosition().getY(), 12, 25
-            );
+    public BiConsumer<Float, MazeRunnerGame> drawCharacter = (sinusInput, game) -> {
+        if (lastPosition.distanceFromOther(getPosition()) == -10) game.getSpriteBatch().draw(
+                game.getCharacterStandingAnimation().getKeyFrame(sinusInput, true), getPosition().getX(), getPosition().getY(), 12, 25
+        );
+        else
+            switch (direction) {
+                case UP:
+                    game.getSpriteBatch().draw(
+                            game.getCharacterWalkingUpAnimation().getKeyFrame(sinusInput, true), getPosition().getX(), getPosition().getY(), 12, 25
+                    );
+                    break;
+                case DOWN:
+                    game.getSpriteBatch().draw(
+                            game.getCharacterWalkingDownwardsAnimation().getKeyFrame(sinusInput, true), getPosition().getX(), getPosition().getY(), 12, 25
+                    );
+                    break;
+                case LEFT:
+                    game.getSpriteBatch().draw(
+                            game.getCharacterWalkingLeftAnimation().getKeyFrame(sinusInput, true), getPosition().getX(), getPosition().getY(), 12, 25
+                    );
+                    break;
+                case RIGHT:
+                    game.getSpriteBatch().draw(
+                            game.getCharacterWalkingRightAnimation().getKeyFrame(sinusInput, true), getPosition().getX(), getPosition().getY(), 12, 25
+                    );
+                    break;
+            }
+    };
+
 
     /**
      * Move the character based on the keypad input, works with the arrows and the WASD
@@ -41,6 +69,7 @@ public class Character extends Entity {
      * @param maze the maze loader class, so we can check whether there is a wall
      */
     public void moveCharacter(Maze maze) {
+        lastPosition = getPosition();
         if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) {
             direction = Direction.UP;
             moveEntity(Direction.UP, maze);

@@ -162,7 +162,7 @@ public class MazeRunnerGame extends Game {
 
         // Add all frames to the animation
         for (int col = 0; col < animationFrames; col++)
-            walkFramesRight.add(new TextureRegion(walkSheet, col * frameWidth, 1, frameWidth, frameHeight));
+            walkFramesRight.add(new TextureRegion(walkSheet, col * frameWidth, 2 * frameWidth, frameWidth, frameHeight));
 
         characterWalkingRightAnimation = new Animation<>(0.1f, walkFramesRight);
 
@@ -172,7 +172,7 @@ public class MazeRunnerGame extends Game {
 
         // Add all frames to the animation
         for (int col = 0; col < animationFrames; col++)
-            walkFramesUp.add(new TextureRegion(walkSheet, col * frameWidth, 2, frameWidth, frameHeight));
+            walkFramesUp.add(new TextureRegion(walkSheet, col * frameWidth, 4 * frameWidth, frameWidth, frameHeight));
 
         characterWalkingUpAnimation = new Animation<>(0.1f, walkFramesUp);
 
@@ -182,7 +182,7 @@ public class MazeRunnerGame extends Game {
 
         // Add all frames to the animation
         for (int col = 0; col < animationFrames; col++)
-            walkFramesLeft.add(new TextureRegion(walkSheet, col * frameWidth, 3, frameWidth, frameHeight));
+            walkFramesLeft.add(new TextureRegion(walkSheet, col * frameWidth, 6 * frameWidth, frameWidth, frameHeight));
 
         characterWalkingLeftAnimation = new Animation<>(0.1f, walkFramesLeft);
 

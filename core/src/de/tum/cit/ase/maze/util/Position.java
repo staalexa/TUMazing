@@ -86,6 +86,19 @@ public class Position {
         return xDifference <= 5 && yDifference <= 5;
     }
 
+    /**
+     * calculates the distance between two positions
+     *
+     * @param other other position
+     * @return the distance
+     */
+    public float distanceFromOther(Position other) {
+        float xDifference = Math.abs(this.getX() - other.getX());
+        float yDifference = Math.abs(this.getY() - other.getY());
+
+        return xDifference + yDifference;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
