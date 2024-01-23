@@ -14,6 +14,7 @@ public class Grid {
 
     /**
      * Constructor of the Grid. Initializes its width and height.
+     *
      * @param size Size of the Grid
      */
     public Grid(int size) {
@@ -24,13 +25,14 @@ public class Grid {
 
     /**
      * Fills the grid with nodes and their neighbors
+     *
      * @param mapData 2d array of 0s and 1s, where 0 represents a free space and 1 represents an obstacle
      */
     public void fillGrid(int[][] mapData) {
         // Initialize nodes
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                if(mapData[x][y] == 0 || mapData[x][y] == 3)
+                if (mapData[x][y] == 0 || mapData[x][y] == 3)
                     grid[x][y] = new Node(new Position(x, y, false), true);
                 else grid[x][y] = new Node(new Position(x, y, false), false);
             }
@@ -46,6 +48,7 @@ public class Grid {
 
     /**
      * Calculates the neighbors of a {@link Node} at a given position
+     *
      * @param x x coordinate of the {@link Node}
      * @param y y coordinate of the {@link Node}
      * @return {@link List<Node>} of neighbors
@@ -70,17 +73,8 @@ public class Grid {
     }
 
     /**
-     * Sets the {@link Node} at a given position to an obstacle or not
-     * @param x x coordinate of the {@link Node}
-     * @param y y coordinate of the {@link Node}
-     * @param isObstacle {@link Boolean} value if the Node represents an obstacle.
-     */
-    public void setObstacle(int x, int y, boolean isObstacle) {
-        grid[x][y].setObstacle(isObstacle);
-    }
-
-    /**
      * Gets the {@link Node} at a given position
+     *
      * @param x x coordinate of the {@link Node}
      * @param y y coordinate of the {@link Node}
      * @return {@link Node} at the given position

@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * This class represents a Node in the {@link Grid}. It contains the {@link Position} of the Node, if it is an obstacle, the gCost, hCost and fCost of the Node, its parent Node and its neighbors.
  */
-public class Node implements Comparable<Node>{
+public class Node implements Comparable<Node> {
 
     private Position position;
     private boolean isObstacle;
@@ -18,7 +18,8 @@ public class Node implements Comparable<Node>{
     /**
      * Constructor of the Node. Initializes its {@link Position} and if it is an obstacle.
      * The Node's neighbor nodes are initially set to null, as they are not yet discovered.
-     * @param position {@link Position} of the Node
+     *
+     * @param position   {@link Position} of the Node
      * @param isObstacle {@link Boolean} value if the Node represents an obstacle.
      */
     public Node(Position position, boolean isObstacle) {
@@ -41,10 +42,6 @@ public class Node implements Comparable<Node>{
 
     public boolean isObstacle() {
         return isObstacle;
-    }
-
-    public void setObstacle(boolean obstacle) {
-        isObstacle = obstacle;
     }
 
     public float getGCost() {
@@ -78,6 +75,7 @@ public class Node implements Comparable<Node>{
 
     /**
      * Compares this Node to another Node. The comparison is based on the fCost and hCost of the Nodes.
+     *
      * @param other the object to be compared.
      * @return a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.
      */

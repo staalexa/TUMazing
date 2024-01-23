@@ -34,7 +34,14 @@ public class MazeRunnerGame extends Game {
     private Skin skin;
 
     // Character animation downwards
-    private Animation<TextureRegion> characterDownAnimation;
+    private Animation<TextureRegion> characterWalkingDownwardsAnimation;
+    // Character animation left
+    private Animation<TextureRegion> characterWalkingLeftAnimation;
+    // Character animation right
+    private Animation<TextureRegion> characterWalkingRightAnimation;
+    // Character animation up
+    private Animation<TextureRegion> characterWalkingUpAnimation;
+    // Character animation standing
     private Music backgroundMusic;
 
     /**
@@ -53,7 +60,7 @@ public class MazeRunnerGame extends Game {
     public void create() {
         spriteBatch = new SpriteBatch(); // Create SpriteBatch
         skin = new Skin(Gdx.files.internal("craft/craftacular-ui.json")); // Load UI skin
-        this.loadCharacterAnimation(); // Load character animation
+        loadCharacterAnimation(); // Load character animation
 
         // Play some background music
         // Background sound
@@ -129,7 +136,7 @@ public class MazeRunnerGame extends Game {
     }
 
     /**
-     * Loads the character animation from the character.png file.
+     * Loads the character animation for every single direction the character can go from the character.png file.
      */
     private void loadCharacterAnimation() {
         Texture walkSheet = new Texture(Gdx.files.internal("character.png"));
@@ -138,15 +145,53 @@ public class MazeRunnerGame extends Game {
         int frameHeight = 32;
         int animationFrames = 4;
 
+        // Down
         // libGDX internal Array instead of ArrayList because of performance
-        Array<TextureRegion> walkFrames = new Array<>(TextureRegion.class);
+        Array<TextureRegion> walkFramesDown = new Array<>(TextureRegion.class);
 
         // Add all frames to the animation
-        for (int col = 0; col < animationFrames; col++) {
-            walkFrames.add(new TextureRegion(walkSheet, col * frameWidth, 0, frameWidth, frameHeight));
-        }
+        for (int col = 0; col < animationFrames; col++)
+            walkFramesDown.add(new TextureRegion(walkSheet, col * frameWidth, 0, frameWidth, frameHeight));
+        // reverses the order, so when the character is standing, it is not standing as if it were walking, rather in a standing position
+        walkFramesDown.reverse();
 
-        characterDownAnimation = new Animation<>(0.1f, walkFrames);
+        characterWalkingDownwardsAnimation = new Animation<>(0.1f, walkFramesDown);
+
+        // Right
+
+        Array<TextureRegion> walkFramesRight = new Array<>(TextureRegion.class);
+
+        // Add all frames to the animation
+        for (int col = 0; col < animationFrames; col++)
+            walkFramesRight.add(new TextureRegion(walkSheet, col * frameWidth, 2 * frameWidth, frameWidth, frameHeight));
+        // reverses the order, so when the character is standing, it is not standing as if it were walking, rather in a standing position
+        walkFramesRight.reverse();
+
+        characterWalkingRightAnimation = new Animation<>(0.1f, walkFramesRight);
+
+        // Up
+
+        Array<TextureRegion> walkFramesUp = new Array<>(TextureRegion.class);
+
+        // Add all frames to the animation
+        for (int col = 0; col < animationFrames; col++)
+            walkFramesUp.add(new TextureRegion(walkSheet, col * frameWidth, 4 * frameWidth, frameWidth, frameHeight));
+        // reverses the order, so when the character is standing, it is not standing as if it were walking, rather in a standing position
+        walkFramesUp.reverse();
+
+        characterWalkingUpAnimation = new Animation<>(0.1f, walkFramesUp);
+
+        // Left
+
+        Array<TextureRegion> walkFramesLeft = new Array<>(TextureRegion.class);
+
+        // Add all frames to the animation
+        for (int col = 0; col < animationFrames; col++)
+            walkFramesLeft.add(new TextureRegion(walkSheet, col * frameWidth, 6 * frameWidth, frameWidth, frameHeight));
+        // reverses the order, so when the character is standing, it is not standing as if it were walking, rather in a standing position
+        walkFramesLeft.reverse();
+
+        characterWalkingLeftAnimation = new Animation<>(0.1f, walkFramesLeft);
     }
 
     /**
@@ -172,15 +217,24 @@ public class MazeRunnerGame extends Game {
         return skin;
     }
 
-    public Animation<TextureRegion> getCharacterDownAnimation() {
-        return characterDownAnimation;
-    }
 
     public SpriteBatch getSpriteBatch() {
         return spriteBatch;
     }
 
-    public GameScreen getGameScreen() {
-        return gameScreen;
+    public Animation<TextureRegion> getCharacterWalkingDownwardsAnimation() {
+        return characterWalkingDownwardsAnimation;
+    }
+
+    public Animation<TextureRegion> getCharacterWalkingLeftAnimation() {
+        return characterWalkingLeftAnimation;
+    }
+
+    public Animation<TextureRegion> getCharacterWalkingRightAnimation() {
+        return characterWalkingRightAnimation;
+    }
+
+    public Animation<TextureRegion> getCharacterWalkingUpAnimation() {
+        return characterWalkingUpAnimation;
     }
 }

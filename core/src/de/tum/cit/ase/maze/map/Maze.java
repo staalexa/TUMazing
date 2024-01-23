@@ -119,12 +119,13 @@ public class Maze {
 
     /**
      * Load the map from the level name. Assumes that level files are like the given template
+     *
      * @param mapData 2D array of the map
      */
     private void loadMapData(int[][] mapData) {
 
         for (int x = 0; x < mapData.length; x++) {
-            for (int y = 0; y < mapData.length ; y++) {
+            for (int y = 0; y < mapData.length; y++) {
                 switch (mapData[x][y]) {
                     case 1 -> entryLocation = new Position(x, y, true);
                     case 2 -> exitLocations.add(new Position(x, y, true));
@@ -134,7 +135,6 @@ public class Maze {
                 }
             }
         }
-
 
 
     }
@@ -178,7 +178,8 @@ public class Maze {
                     case 0 -> drawTexture(spriteBatch, xPos, yPos, wallTexture);
                     //case 1 -> drawTexture(spriteBatch, xPos, yPos, entryTexture, scale); // TODO check if we want entry texture
                     case 2 -> drawTexture(spriteBatch, xPos, yPos, exitTexture);
-                    case 3 -> drawTexture(spriteBatch, xPos, yPos, fireAnimation.getKeyFrame(stateTime, true)); // draw fire animation
+                    case 3 ->
+                            drawTexture(spriteBatch, xPos, yPos, fireAnimation.getKeyFrame(stateTime, true)); // draw fire animation
                     case 4 -> {
                         Mob currentMob = this.mobs.get(mobIndex++);
                         currentMob.drawMob(this, spriteBatch, enemyTexture);
@@ -231,18 +232,10 @@ public class Maze {
         batch.draw(region, xPos, yPos, region.getRegionWidth(), region.getRegionHeight());
     }
 
-    /**
-     * Converts a number into a position of the map by multiplying by scale and tile size
-     *
-     * @param number the number that you want to convert
-     * @return the converted number
-     */
-    public static int convertToMapPosition(float number) {
-        return Math.round(number / tileSize);
-    }
 
     /**
      * Checks if a map file is valid
+     *
      * @return true, when all necessary parts of the map exist, otherwise false
      */
     public boolean checkValid() {
@@ -288,9 +281,6 @@ public class Maze {
         return entryLocation;
     }
 
-    public Position getKeyLocation() {
-        return keyLocation;
-    }
 
     public List<Position> getTrapLocations() {
         return trapLocations;
@@ -302,14 +292,6 @@ public class Maze {
 
     public List<Mob> getMobs() {
         return mobs;
-    }
-
-    public void removeMob(Mob mob) {
-        mobs.remove(mob);
-    }
-
-    public int[][] getMapData() {
-        return mapData;
     }
 
     /**
