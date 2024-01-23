@@ -41,6 +41,8 @@ public class MazeRunnerGame extends Game {
     private Animation<TextureRegion> characterWalkingRightAnimation;
     // Character animation up
     private Animation<TextureRegion> characterWalkingUpAnimation;
+    // Character animation standing
+    private Animation<TextureRegion> characterStandingAnimation;
     private Music backgroundMusic;
 
     /**
@@ -180,9 +182,19 @@ public class MazeRunnerGame extends Game {
 
         // Add all frames to the animation
         for (int col = 0; col < animationFrames; col++)
-            walkFramesLeft.add(new TextureRegion(walkSheet, col * frameWidth, 2, frameWidth, frameHeight));
+            walkFramesLeft.add(new TextureRegion(walkSheet, col * frameWidth, 3, frameWidth, frameHeight));
 
         characterWalkingLeftAnimation = new Animation<>(0.1f, walkFramesLeft);
+
+        // Standing
+
+        Array<TextureRegion> standFrames = new Array<>(TextureRegion.class);
+
+        // Add all frames to the animation
+        for (int col = 0; col < animationFrames; col++)
+            standFrames.add(new TextureRegion(walkSheet, col, 0, frameWidth, frameHeight));
+
+        characterStandingAnimation = new Animation<>(0.1f, standFrames);
     }
 
     /**
