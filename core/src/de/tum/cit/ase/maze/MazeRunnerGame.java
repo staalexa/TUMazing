@@ -220,15 +220,28 @@ public class MazeRunnerGame extends Game {
         return skin;
     }
 
-    public Animation<TextureRegion> getCharacterWalkingDownwardsAnimation() {
-        return characterWalkingDownwardsAnimation;
-    }
 
     public SpriteBatch getSpriteBatch() {
         return spriteBatch;
     }
 
-    public GameScreen getGameScreen() {
-        return gameScreen;
+    public Animation<TextureRegion> getCharacterWalkingDownwardsAnimation() {
+        return characterWalkingDownwardsAnimation;
+    }
+
+    public Animation<TextureRegion> getCharacterWalkingLeftAnimation() {
+        return characterWalkingLeftAnimation;
+    }
+
+    public Animation<TextureRegion> getCharacterWalkingRightAnimation() {
+        return characterWalkingRightAnimation;
+    }
+
+    public Animation<TextureRegion> getCharacterWalkingUpAnimation() {
+        return characterWalkingUpAnimation;
+    }
+
+    public Animation<TextureRegion> getCharacterStandingAnimation() {
+        return characterStandingAnimation;
     }
 }

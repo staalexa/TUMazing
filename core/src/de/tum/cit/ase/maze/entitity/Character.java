@@ -17,6 +17,8 @@ public class Character extends Entity {
     private static final int MAX_LIVES = 3;
     private boolean hasKey;
 
+    private Direction direction;
+
     public Character(Position position, MazeRunnerGame game, HUD hud) {
         super(position, MAX_LIVES, 1, game, hud);
         hasKey = false;
@@ -39,14 +41,19 @@ public class Character extends Entity {
      * @param maze the maze loader class, so we can check whether there is a wall
      */
     public void moveCharacter(Maze maze) {
-        if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP))
+        if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            direction = Direction.UP;
             moveEntity(Direction.UP, maze);
-        else if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN))
+        } else if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            direction = Direction.DOWN;
             moveEntity(Direction.DOWN, maze);
-        else if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+        } else if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            direction = Direction.RIGHT;
             moveEntity(Direction.RIGHT, maze);
-        else if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT))
+        } else if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            direction = Direction.LEFT;
             moveEntity(Direction.LEFT, maze);
+        }
     }
 
     public boolean hasKey() {
