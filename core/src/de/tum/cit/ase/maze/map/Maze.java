@@ -27,6 +27,7 @@ public class Maze {
     private TextureRegion wallTexture, pathTexture, entryTexture, exitTexture, trapTexture,
             keyTexture, enemyTexture;
     private List<TextureRegion> fireFrames;
+    private List<TextureRegion> keyFrames;
     private Position entryLocation, keyLocation;
     private List<Position> trapLocations, exitLocations;
     private List<Mob> mobs;
@@ -42,6 +43,7 @@ public class Maze {
         height = 20;
         tileSize = 16;
         fireFrames = new ArrayList<>();
+        keyFrames = new ArrayList<>();
         stateTime = 0f;
 
         trapLocations = new ArrayList<>();
@@ -162,10 +164,12 @@ public class Maze {
         enemyTexture = mobRegions[5][9];
 
         // Create fire animation
-        fireFrames.addAll(Arrays.asList(objectRegions[3]).subList(4, 11)); // add frames
-
+        fireFrames.addAll(Arrays.asList(objectRegions[3]).subList(4, 11));
         Animation<TextureRegion> fireAnimation = new Animation<>(0.1f, fireFrames.toArray(TextureRegion[]::new));
 
+        // Create key animation
+        keyFrames.addAll(Arrays.asList(objectRegions[4]).subList(1, 4));
+        Animation<TextureRegion> keyAnimation = new Animation<>(0.1f, keyFrames.toArray(TextureRegion[]::new));
 
         float stateTime = this.stateTime + delta; // update the stateTime variable for the next loop;
         int mobIndex = 0;
@@ -184,7 +188,7 @@ public class Maze {
                         Mob currentMob = this.mobs.get(mobIndex++);
                         currentMob.drawMob(this, spriteBatch, enemyTexture);
                     }
-                    case 5 -> drawTexture(spriteBatch, xPos, yPos, keyTexture);
+                    case 5 -> drawTexture(spriteBatch, xPos, yPos, keyAnimation.getKeyFrame(stateTime / 2, true));
                     //default -> drawTexture(spriteBatch, xPos, yPos, pathTexture, scale); //TODO check if we want path textures
                 }
             }
