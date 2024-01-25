@@ -17,11 +17,13 @@ public class HUD {
     private Image[] lifeImages;
     private Image keyImage;
     private int remainingLives;
+    private SpriteBatch keyBatch;
 
     public HUD(SpriteBatch batch, int screenWidth, int screenHeight, Texture objects, int scale) {
         stage = new Stage(new FitViewport(screenWidth, screenHeight), batch);
         lifeImages = new Image[Character.getMaxLives()];
         remainingLives = Character.getMaxLives();
+        keyBatch = new SpriteBatch();
 
         // Textures
         TextureRegion[][] textureRegions = TextureUtil.getTextures(objects);
@@ -39,8 +41,7 @@ public class HUD {
         // Create key image
         keyImage = new Image(keyTexture);
         keyImage.setSize(keyImage.getWidth() * scale, keyImage.getHeight() * scale);
-        keyImage.setPosition(screenHeight - keyImage.getWidth() - 20, screenHeight - keyImage.getHeight() - 20);
-        stage.addActor(keyImage);
+        keyImage.setPosition(keyImage.getWidth() - 60, screenHeight - keyImage.getHeight() - 130);
 
         collectedKey(false);
     }
@@ -55,12 +56,13 @@ public class HUD {
     }
 
     /**
-     * Set the display value of the Key
+     *  Sets the key image to visible or transparent
      *
-     * @param hasKey
+     * @param hasKey true if the player has the key
      */
     public void collectedKey(boolean hasKey) {
-        keyImage.setVisible(hasKey);
+        if (hasKey) keyImage.setColor(1, 1, 1, 1);
+        else keyImage.setColor(1, 1, 1, 0.3f); // semi transparent
     }
 
     /**
@@ -69,6 +71,11 @@ public class HUD {
     public void draw() {
         stage.act();
         stage.draw();
+
+        // Draw key separately to enable transparency
+        keyBatch.begin();
+        keyImage.draw(keyBatch, 1);
+        keyBatch.end();
     }
 
     /**
@@ -76,5 +83,6 @@ public class HUD {
      */
     public void dispose() {
         stage.dispose();
+        keyBatch.dispose();
     }
 }
