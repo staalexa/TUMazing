@@ -71,6 +71,19 @@ After we generate a random map. We use the `AStar` class (which implements the A
                         └── TextureUtil.java
 
 ```
+#### Class explanation
+- `Character.java`: This class inherits from the Entity superclass and adds functionality specific to the player character, such as key collection and exiting the maze.  
+- `Entity.java`: This abstract superclass implements lives and basic functionality (e.g., moving) for all entities in the game.  
+- `Mob.java`: This class also inherits from the Entity superclass and implements the behavior of the mobs (enemies) in the game.  
+- `MapFormatWrongException.java`: This class handles exceptions related to incorrect map formatting.  
+- `GameScreen.java`: This class is responsible for rendering the game screen.  
+- `HUD.java`: This class handles the Heads Up Display (HUD) that shows the player's lives and key collection status.  
+- `Key.java`: This class represents the key that the player must collect to exit the maze.  
+- `Maze.java`: This class defines the maze in the game and is responsible for loading and displaying the map.  
+- `MazeRunnerGame.java`: This is the main class that runs the game.  
+- `EndScreen.java`, `LevelSelectScreen.java`, `MenuScreen.java`, `PauseScreen.java`: These classes handle different screens in the game menu.  
+- `AStar.java`, `Grid.java`, `Node.java`: These classes implement the A* search and path-finding algorithm used in the game.  
+- `Direction.java`, `GameState.java`, `MapGenerator.java`, `Position.java`, `TextureUtil.java`: These utility classes provide various functionalities such as direction handling, game state management, map generation, position handling, and texture utilities.
 
 ## How to play the game
 
@@ -78,6 +91,6 @@ After we generate a random map. We use the `AStar` class (which implements the A
 The main goal of the game, is to find and collect a key, and leave through one of the possible exits of the maze. You need to be careful not to lose all lives by running into traps or enemies.
 
 ### Level Selection
-By default, there are 5 different levels, which you can choose through the game's menu. We have additionally implemented a random map generator.
+By default, there are 4 different levels, which you can choose through the game's menu. We have additionally implemented a random map generator.
 
 
