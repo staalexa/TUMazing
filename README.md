@@ -4,18 +4,22 @@
 ## About
 
 ### Base Code Structure
-The most important part of the code, is the `Maze`, followed by the `Position` class. The `Maze` class is responsible for reading all worlds from the `Maps` folder.
-After a level is chosen, the `Maze` class reads the whole file, loading the different positions of each object type into multiple lists, and drawing the textures of the object onto the screen. One of the most important methods is the boolean `isWall(Position)`. This method is used during moving to make sure, that no entity can walk into the walls. Doors are also treated as walls, until the player has collected the key.
-The `Position` class functions as a datatype and is used to store and compare different positions. We differentiate between the actual coordinates given through the level file, and the actual coordinates, which are different, as the "blocks" have a resolution of 16x16 pixels. The class includes different methods to calculate between these two coordinate systems.
+The core of the code is structured around several classes, primarily the `Maze` and `Position` classes.
+- `Maze`: This class is responsible for reading all worlds from the `Maps` folder. It loads the different positions of each object type into multiple lists and draws the textures of the object onto the screen. It also includes a `boolean isWall(Position)` method used during moving to ensure that no entity can walk into the walls.
+- `Position`: This class functions as a datatype and is used to store and compare different positions. It includes different methods to calculate between two coordinate systems.
 
 ### Game mechanics
 All moving objects are considered to be entities in the world. The abstract `Entity` superclass implements lives and basic functionality (eg. moving) for the entities. Moving uses checking methods from the `Maze` class and offsets certain values, to make up for the character being larger than a single pixel.
 The `Character` class inherits from the `Entity` superclass and adds the missing functionality (eg. key collection, exiting the maze, etc.).
 
+Here is a more detailed description of the classes:
+- `Entity`: This abstract superclass implements lives and basic functionality (e.g., moving) for all entities in the game.
+- `Character`: This class inherits from the `Entity` superclass and adds functionality specific to the player character, such as key collection and exiting the maze.
+- `Mob`: This class also inherits from the `Entity` superclass and implements the behavior of the mobs (enemies) in the game.
+
 > Traps are missing here
 
-The `Mob` class also inherits from the `Entity` superclass and implements the mobs behavior.
-
+#### HUD
 During the game, the user can see a Heads Up Display (HUD). This is handled in the `HUD` class. It implements methods to remove hearts from the screen, as the player loses lives, and can toggle the status of key collection.
 
 #### Map loading
@@ -28,10 +32,13 @@ First we initialize the Map array. We begin by filling out the outer walls, then
 After we generate a random map. We use the `AStar` class (which implements the A* searching and path-finding algorithm) to check if there is a path between the entry position, the key, and the exit. If there is a path, the generated map is playable. We then create a new `GameScreen` with the random map.
 
 
-
-### Utility classes
-
-
+#### Utility Classes
+Several utility classes provide various functionalities:  
+Direction: Handles direction.
+- `GameState`: Manages game state.
+- `MapGenerator`: Handles map generation.
+- `Position`: Handles position.
+- `TextureUtil`: Provides texture utilities.
 
 ## Code structure
 
@@ -71,7 +78,7 @@ After we generate a random map. We use the `AStar` class (which implements the A
                         └── TextureUtil.java
 
 ```
-#### Class explanation
+#### Detailed class explanation
 - `Character.java`: This class inherits from the Entity superclass and adds functionality specific to the player character, such as key collection and exiting the maze.  
 - `Entity.java`: This abstract superclass implements lives and basic functionality (e.g., moving) for all entities in the game.  
 - `Mob.java`: This class also inherits from the Entity superclass and implements the behavior of the mobs (enemies) in the game.  
@@ -85,12 +92,35 @@ After we generate a random map. We use the `AStar` class (which implements the A
 - `AStar.java`, `Grid.java`, `Node.java`: These classes implement the A* search and path-finding algorithm used in the game.  
 - `Direction.java`, `GameState.java`, `MapGenerator.java`, `Position.java`, `TextureUtil.java`: These utility classes provide various functionalities such as direction handling, game state management, map generation, position handling, and texture utilities.
 
-## How to play the game
+# How to play the game
 
-### Main Goal
-The main goal of the game, is to find and collect a key, and leave through one of the possible exits of the maze. You need to be careful not to lose all lives by running into traps or enemies.
+The main goal of the game is to find and collect a key, and leave through one of the possible exits of the maze. You need to be careful not to lose all lives by running into traps or enemies. By default, there are 4 different levels, which you can choose through the game's menu. We have additionally implemented a random map generator.
 
-### Level Selection
-By default, there are 4 different levels, which you can choose through the game's menu. We have additionally implemented a random map generator.
+### Custom Maps
+The game will accept custom map files from the user. To load a custom map into the game, place the appropriate `.properties` file into the `maps` folder of the game.
+Every Map needs to have at least the following to work (otherwise, the map will not load)
+- Height/Width values expressed as `Height=x` and `Width=y` (x and y can be any positive integer). These values determine the size of the map.
+- The different objects within the map. They need to adhere to the format `x,y=z` (x and y can be any positive integer, representing x and y coordinates of the given object in the map; z needs to adhere to the object list below)
 
+| **Value** |  **Type**   |
+|:---------:|:-----------:|
+|     0     |    Wall     |
+|     1     | Entry point |
+|     2     |    Exit     |
+|     3     |    Fire     |
+|     4     |    Enemy    |
+|     5     |     Key     |
 
+- Please also consider the following **limitations**:
+    1. Every map needs to at least have one key, one entry and one exit.
+    2. There can only be one Entry
+
+### Controls
+- `WASD` or `Arrow Keys` to move
+- `ESC` to pause the game
+
+## Credits
+- Logo: Technical University of Munich
+- Textures: provided by Technical University of Munich
+- Sound: provided by [openGameArt](https://opengameart.org/)
+- LibGDX: [libGDX](https://libgdx.badlogicgames.com/)
