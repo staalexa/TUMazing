@@ -48,31 +48,6 @@ public class LevelSelectScreen implements Screen {
         stage.draw(); // Draw the stage
     }
 
-    @Override
-    public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true); // Update the stage viewport on resize
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
-    }
-
-    @Override
-    public void dispose() {
-        stage.dispose();
-    }
-
     /**
      * Prints a button list with all levels from the maps folder
      *
@@ -114,5 +89,30 @@ public class LevelSelectScreen implements Screen {
                 game.goToGame("RANDOM"); // Change to the game screen when button is pressed
             }
         });
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        stage.getViewport().update(width, height, true); // Update the stage viewport on resize
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void hide() {
+
+    }
+
+    @Override
+    public void dispose() {
+        stage.dispose();
     }
 }

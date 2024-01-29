@@ -10,7 +10,7 @@ import de.tum.cit.ase.maze.util.Position;
 import java.util.Random;
 
 /**
- * The Mob class represents the enemy in the game. It is a subclass of Entity.
+ * The Mob class represents the enemy in the game. It is a subclass of {@link Entity}.
  */
 public class Mob extends Entity {
     private long lastKill;
@@ -28,9 +28,9 @@ public class Mob extends Entity {
     /**
      * draw the mob
      *
-     * @param maze         reference of the maze
+     * @param maze         reference of the {@link Maze}
      * @param spriteBatch  reference of the sprite batch
-     * @param enemyTexture texture of the mob
+     * @param enemyTexture texture of the {@link Mob}
      */
     public void drawMob(Maze maze, SpriteBatch spriteBatch, TextureRegion enemyTexture) {
         maze.drawTexture(spriteBatch, getPosition().getX(), getPosition().getY(), enemyTexture);
@@ -39,7 +39,7 @@ public class Mob extends Entity {
     /**
      * Move the mob. The mob will move in a random direction and will change direction if it hits a wall.
      *
-     * @param maze reference of the whole maze
+     * @param maze reference of the whole {@link Maze}
      */
     public void moveMob(Maze maze) {
 
@@ -80,7 +80,7 @@ public class Mob extends Entity {
     /**
      * Check if the mob can change direction and change direction if possible
      *
-     * @param maze reference of the whole maze
+     * @param maze reference of the whole {@link Maze}
      */
     private void checkAndChangeDirection(Maze maze) {
         // Check if the sides are free during movement and change direction accordingly

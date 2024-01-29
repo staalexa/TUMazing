@@ -180,7 +180,7 @@ public class Maze {
                 float yPos = y * wallTexture.getRegionHeight(); // Calculate y position
                 switch (mapData[x][y]) {
                     case 0 -> drawTexture(spriteBatch, xPos, yPos, wallTexture);
-                    //case 1 -> drawTexture(spriteBatch, xPos, yPos, entryTexture, scale); // TODO check if we want entry texture
+                    //case 1 -> drawTexture(spriteBatch, xPos, yPos, entryTexture, scale); // FUTURE FEAT: draw entry texture
                     case 2 -> drawTexture(spriteBatch, xPos, yPos, exitTexture);
                     case 3 ->
                             drawTexture(spriteBatch, xPos, yPos, fireAnimation.getKeyFrame(stateTime, true)); // draw fire animation
@@ -189,7 +189,7 @@ public class Maze {
                         currentMob.drawMob(this, spriteBatch, enemyTexture);
                     }
                     case 5 -> drawTexture(spriteBatch, xPos, yPos, keyAnimation.getKeyFrame(stateTime / 2, true));
-                    //default -> drawTexture(spriteBatch, xPos, yPos, pathTexture, scale); //TODO check if we want path textures
+                    //default -> drawTexture(spriteBatch, xPos, yPos, pathTexture, scale); // FUTURE FEAT: draw path texture
                 }
             }
         }
@@ -197,9 +197,9 @@ public class Maze {
     }
 
     /**
-     * Removes the key from given position
+     * Removes the key from given {@link Position}
      *
-     * @param position The key's position
+     * @param position The {@link Key}'s position
      */
     public void removeKey(Position position) {
         removeMapObject(position);
@@ -208,7 +208,7 @@ public class Maze {
     /**
      * Removes a trap from the map
      *
-     * @param position Position of the Trap
+     * @param position {@link Position} of the Trap
      */
     public void activateTrap(Position position) {
         removeMapObject(position);
@@ -218,7 +218,7 @@ public class Maze {
      * Generic method to remove stuff from the map
      * THIS IS PERMANENT!!!
      *
-     * @param position Position of the object
+     * @param position {@link Position} of the object
      */
     private void removeMapObject(Position position) {
         mapData[position.getX() / 16][position.getY() / 16] = 9;

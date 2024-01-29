@@ -11,7 +11,7 @@ public class Key {
     private boolean pickedUp;
 
     /**
-     * Set the keys position. Only used during game loading
+     * Set the {@link Key}s {@link Position}. Only used during game loading
      * @param position
      */
     public void setPosition(Position position) {
@@ -19,11 +19,10 @@ public class Key {
         pickedUp = false;
     }
 
-    //TODO check why this does not work from game.getGameScreen
     /**
      * Pickup the key. Set the key to the player and toggle the view on the hud
-     * @param screen Current GameScreen
-     * @return true if key was picked up, false if the character already has the key
+     * @param screen Current {@link GameScreen}
+     * @return true if key was picked up, false if the {@link Character} already has the {@link Key}
      */
     public boolean pickUp(GameScreen screen) {
         if (screen.getCharacter().hasKey()) return false; // check if key already collected

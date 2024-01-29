@@ -19,6 +19,15 @@ public class HUD {
     private int remainingLives;
     private SpriteBatch keyBatch;
 
+    /**
+     * Constructor
+     *
+     * @param batch        SpriteBatch to draw the HUD
+     * @param screenWidth  Screen width
+     * @param screenHeight Screen height
+     * @param objects      Texture with the objects
+     * @param scale        Scale of the HUD
+     */
     public HUD(SpriteBatch batch, int screenWidth, int screenHeight, Texture objects, int scale) {
         stage = new Stage(new FitViewport(screenWidth, screenHeight), batch);
         lifeImages = new Image[Character.getMaxLives()];

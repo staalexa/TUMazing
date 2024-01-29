@@ -10,7 +10,7 @@ public class TextureUtil {
 
     /**
      * Helper method to cut out images of larger texture file maps.
-     * @param texture A Texture
+     * @param texture A {@link Texture} containing the images
      * @return grid of textures with [x][y]=textureRegion
      */
     public static TextureRegion[][] getTextures(Texture texture) {

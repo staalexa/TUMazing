@@ -1,6 +1,33 @@
 
 # TUMazing Maze Runner
 
+## How to play the game
+
+The main goal of the game is to find and collect a key or coin, and leave through one of the possible exits of the maze. You need to be careful not to lose all lives by running into traps or enemies. By default, there are 4 different levels, which you can choose through the game's menu. We have additionally implemented a random map generator.
+
+### Custom Maps
+The game will accept custom map files from the user. To load a custom map into the game, place the appropriate `.properties` file into the `maps` folder of the game.
+Every Map needs to have at least the following to work (otherwise, the map will not load)
+- Height/Width values expressed as `Height=x` and `Width=y` (x and y can be any positive integer). These values determine the size of the map.
+- The different objects within the map. They need to adhere to the format `x,y=z` (x and y can be any positive integer, representing x and y coordinates of the given object in the map; z needs to adhere to the object list below)
+
+| **Value** |  **Type**   |
+|:---------:|:-----------:|
+|     0     |    Wall     |
+|     1     | Entry point |
+|     2     |    Exit     |
+|     3     |    Fire     |
+|     4     |    Enemy    |
+|     5     |     Key     |
+
+- Please also consider the following **limitations**:
+  1. Every map needs to at least have one key, one entry and one exit.
+  2. There can only be one Entry
+
+### Controls
+- `WASD` or `Arrow Keys` to move
+- `ESC` to pause the game
+
 ## About
 
 ### Base Code Structure
@@ -11,13 +38,7 @@ The core of the code is structured around several classes, primarily the `Maze` 
 ### Game mechanics
 All moving objects are considered to be entities in the world. The abstract `Entity` superclass implements lives and basic functionality (eg. moving) for the entities. Moving uses checking methods from the `Maze` class and offsets certain values, to make up for the character being larger than a single pixel.
 The `Character` class inherits from the `Entity` superclass and adds the missing functionality (eg. key collection, exiting the maze, etc.).
-
-Here is a more detailed description of the classes:
-- `Entity`: This abstract superclass implements lives and basic functionality (e.g., moving) for all entities in the game.
-- `Character`: This class inherits from the `Entity` superclass and adds functionality specific to the player character, such as key collection and exiting the maze.
-- `Mob`: This class also inherits from the `Entity` superclass and implements the behavior of the mobs (enemies) in the game.
-
-> Traps are missing here
+The `Traps` are implemented in an `ArrayList` and are checked for collision with the player in the `GameScreen` class.
 
 #### HUD
 During the game, the user can see a Heads Up Display (HUD). This is handled in the `HUD` class. It implements methods to remove hearts from the screen, as the player loses lives, and can toggle the status of key collection.
@@ -91,33 +112,6 @@ Direction: Handles direction.
 - `EndScreen.java`, `LevelSelectScreen.java`, `MenuScreen.java`, `PauseScreen.java`: These classes handle different screens in the game menu.  
 - `AStar.java`, `Grid.java`, `Node.java`: These classes implement the A* search and path-finding algorithm used in the game.  
 - `Direction.java`, `GameState.java`, `MapGenerator.java`, `Position.java`, `TextureUtil.java`: These utility classes provide various functionalities such as direction handling, game state management, map generation, position handling, and texture utilities.
-
-# How to play the game
-
-The main goal of the game is to find and collect a key, and leave through one of the possible exits of the maze. You need to be careful not to lose all lives by running into traps or enemies. By default, there are 4 different levels, which you can choose through the game's menu. We have additionally implemented a random map generator.
-
-### Custom Maps
-The game will accept custom map files from the user. To load a custom map into the game, place the appropriate `.properties` file into the `maps` folder of the game.
-Every Map needs to have at least the following to work (otherwise, the map will not load)
-- Height/Width values expressed as `Height=x` and `Width=y` (x and y can be any positive integer). These values determine the size of the map.
-- The different objects within the map. They need to adhere to the format `x,y=z` (x and y can be any positive integer, representing x and y coordinates of the given object in the map; z needs to adhere to the object list below)
-
-| **Value** |  **Type**   |
-|:---------:|:-----------:|
-|     0     |    Wall     |
-|     1     | Entry point |
-|     2     |    Exit     |
-|     3     |    Fire     |
-|     4     |    Enemy    |
-|     5     |     Key     |
-
-- Please also consider the following **limitations**:
-    1. Every map needs to at least have one key, one entry and one exit.
-    2. There can only be one Entry
-
-### Controls
-- `WASD` or `Arrow Keys` to move
-- `ESC` to pause the game
 
 ## Credits
 - Logo: Technical University of Munich

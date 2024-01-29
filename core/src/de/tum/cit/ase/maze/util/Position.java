@@ -48,8 +48,8 @@ public class Position {
      * Moves the current location by given values
      *
      * @param direction UP, DOWN, LEFT, RIGHT
-     * @param speed     The amount of pixels the entity needs to move
-     * @param maze      an instance of the current maze
+     * @param speed     The amount of pixels the {@link de.tum.cit.ase.maze.entitity.Entity} needs to move
+     * @param maze      an instance of the current {@link Maze}
      */
     public void move(Direction direction, int speed, Maze maze) {
         int increase = 0;
@@ -76,7 +76,7 @@ public class Position {
     /**
      * Calculates threshold distance between two positions
      *
-     * @param other Another position
+     * @param other Another {@link Position}
      * @return true if the two positions have max the range 5 between them (translates to when the positions are the same)
      */
     public boolean isWithinRange(Position other) {
